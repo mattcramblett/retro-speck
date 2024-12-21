@@ -1,13 +1,9 @@
-"use client"
-import { Button } from "@/components/ui/button";
-import { testAction } from "@/lib/test-actions";
+import { OTPForm } from "@/components/login/otp-form";
 
 export default function Home() {
   return (
-    <main>
-      <Button onClick={() => testAction()}>
-        Test Backend 
-      </Button>
+    <main className="w-full flex flex-col items-center">
+      <OTPForm />
     </main>
   );
 }
