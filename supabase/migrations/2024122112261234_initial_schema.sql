@@ -50,17 +50,11 @@ CREATE TABLE "votes" (
 );
 
 -- FOREIGN KEY CONSTRAINTS
-ALTER TABLE "retros" ADD FOREIGN KEY ("creating_user_id") REFERENCES auth.users ("id");
-
-ALTER TABLE "retros" ADD FOREIGN KEY ("facilitator_user_id") REFERENCES auth.users ("id");
-
 ALTER TABLE "retros" ADD FOREIGN KEY ("current_card_id") REFERENCES "cards" ("id");
 
 ALTER TABLE "retro_columns" ADD FOREIGN KEY ("retro_id") REFERENCES "retros" ("id");
 
 ALTER TABLE "participants" ADD FOREIGN KEY ("retro_id") REFERENCES "retros" ("id");
-
-ALTER TABLE "participants" ADD FOREIGN KEY ("user_id") REFERENCES auth.users ("id");
 
 ALTER TABLE "cards" ADD FOREIGN KEY ("participant_id") REFERENCES "participants" ("id");
 
