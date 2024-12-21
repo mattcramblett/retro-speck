@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist } from "next/font/google";
 import "./globals.css";
+import Providers from "./providers";
+import { cn } from "@/lib/utils";
+import { Toaster } from "@/components/ui/toaster";
+import { LayoutHeader } from "@/components/brand/layout-header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
   subsets: ["latin"],
 });
 
@@ -19,16 +18,19 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+    <html lang="en" className="theme-custom overflow-hidden h-full">
+      <body className={cn(
+          "min-h-screen gradient font-sans antialiased overflow-y-scroll h-full",
+          geistSans.variable
+      )}>
+        <LayoutHeader />
+        <Providers>{children}</Providers>
+        <Toaster />
       </body>
     </html>
-  );
+  )
 }

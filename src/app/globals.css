@@ -8,7 +8,7 @@ body {
 
 @layer base {
   :root {
-    /* CSS: .bg-gradient { background: var(--gradient) } */
+    .bg-gradient { background: var(--gradient) }
     --gradient: linear-gradient(to top left,#00F5A0,#00D9F5);
 
     --background: 169 65% 3.84%;
