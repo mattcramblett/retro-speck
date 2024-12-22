@@ -24,7 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="theme-custom overflow-hidden h-full">
       <body className={cn(
-          "min-h-screen gradient font-sans antialiased overflow-y-scroll h-full",
+        "min-h-screen font-sans antialiased overflow-y-scroll h-full flex flex-col flex-1",
           geistSans.variable
       )}>
         <LayoutHeader />
