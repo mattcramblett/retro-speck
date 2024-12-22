@@ -33,6 +33,9 @@ export function CreateRetroForm() {
   });
 
   const { mutateAsync, isPending } = useCreateRetro({
+    onSuccess: (data) => {
+      router.push(`/retro/${data}`);
+    },
     onError: () =>
       toast({
         variant: "destructive",
@@ -41,10 +44,8 @@ export function CreateRetroForm() {
       }),
   });
 
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    const publicId = await mutateAsync(values.title);
-    router.push(`/retro/${publicId}`);
-  };
+  const onSubmit = async (values: z.infer<typeof formSchema>) =>
+    mutateAsync(values.title);
 
   return (
     <Form {...form}>

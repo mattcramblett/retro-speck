@@ -5,7 +5,7 @@ import { Logo } from "./logo"
 export function LayoutHeader() {
   return (
     <Header>
-      <div className="flex w-fit items-center gap-2 ml-5 md:ml-8">
+      <div className="flex w-fit items-center gap-2">
         <Logo size={24} linkToHome />
         <Title responsive={true} />
       </div>

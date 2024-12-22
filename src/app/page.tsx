@@ -7,7 +7,7 @@ export default async function Home() {
 
   return (
     <main className="size-full flex items-center justify-center">
-      <div className="max-w-[30em] md:max-w-[60em] w-full">
+      <div className="container">
         <Title className="text-2xl sm:text-4xl md:text-6xl lg:text-8xl p-2 md:p-4 whitespace-normal">
           Team Restrospectives done better.
         </Title>
