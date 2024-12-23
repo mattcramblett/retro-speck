@@ -2,32 +2,27 @@
 import { DynamicTextarea } from "@/components/ui/dynamic-textarea";
 import { useRetroCards } from "@/hooks/cards/use-retro-cards";
 import { Card } from "@/types/model";
-import { useState, useRef } from "react";
-import { debounce } from "throttle-debounce";
+import { useState, useEffect } from "react";
 
+// The useState/useEffect combo for `content` is to prevent the textarea cursor from jumping as a user types.
+// The useMutation update lifecycle is somehow slightly out of sync with DOM rendering, probably because it's
+// expected to be async. This just keeps the data stable with rendering cycles but also fresh.
 export function RetroCard({ retroId, initialCard }: { retroId: number, initialCard: Card }) {
-  const [card, setCard] = useState<Card>(initialCard);
-  
-  const { useUpdateCard } = useRetroCards({ retroId });
-  const { mutateAsync } = useUpdateCard(card.id);
+  const { useUpdateCard, useCard } = useRetroCards({ retroId });
+  const { data: card } = useCard({ retroId, cardId: initialCard.id, initialData: initialCard });
+  const { mutate } = useUpdateCard(initialCard.id);
 
-  const debouncedUpdate = useRef(
-    debounce(1000, async (c: Partial<Card>) => setCard(await mutateAsync(c))),
-  );
-  // TODO: Should this just be a 'useCard' query with initialData?
+  const [content, setContent] = useState(initialCard.content);
+  useEffect(() => setContent(card?.content || ""), [card?.content]);
 
-  const handleUpdate = (content: string) => {
-    // Not ideal to have a side-effect within a state setter callback
-    setCard((c: Card) => {
-      const updatedCard = { ...c, content };
-      debouncedUpdate.current(updatedCard);
-      return updatedCard;
-    });
+  const handleUpdate = (updatedContent: string) => {
+    setContent(updatedContent);
+    mutate({ ...(card || initialCard), content: updatedContent });
   };
 
   return (
     <DynamicTextarea
-      value={card.content || ""}
+      value={content}
       onChange={(e) => handleUpdate(e.target.value || "")}
     />
   );

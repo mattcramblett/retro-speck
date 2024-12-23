@@ -1,12 +1,17 @@
 "use server";
 import { Card } from "@/types/model";
-import { getCards as queryCards, updateCard as persistCard, createCard as insertCard } from "../repositories/card-repository";
+import { getCard as findCard, getCards as fetchCards, updateCard as persistCard, createCard as insertCard } from "../repositories/card-repository";
 import { assertAccess, assertAccessToCard } from "./authZ-action";
 import { getUserOrThrow } from "./authN-actions";
 
+export async function getCard(cardId: number): Promise<Card> {
+  assertAccessToCard(cardId);
+  return await findCard(cardId);
+}
+
 export async function getCards(retroId: number): Promise<Card[]> {
   assertAccess(retroId);
-  return await queryCards(retroId);
+  return await fetchCards(retroId);
 }
 
 export async function createCard(columnId: number): Promise<Card> {

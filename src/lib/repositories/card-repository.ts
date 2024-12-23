@@ -8,6 +8,16 @@ import {
 import { Card } from "@/types/model";
 import { and, desc, eq } from "drizzle-orm";
 
+export async function getCard(cardId: number): Promise<Card> {
+  const result = await db
+    .select()
+    .from(cardTable)
+    .where(eq(cardTable.id, cardId))
+    .limit(1);
+  if (!result.length) throw "Not found";
+  return result[0] as Card;
+}
+
 export async function getCards(retroId: number): Promise<Card[]> {
   const results = await db
     .select()
