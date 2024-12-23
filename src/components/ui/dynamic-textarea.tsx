@@ -47,7 +47,7 @@ export function DynamicTextarea({
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className="transition-all font-medium w-full px-3 py-2 bg-secondary hover:bg-secondary/80 rounded-lg focus:outline-none resize-none overflow-hidden"
+        className="transition-all font-medium w-full px-3 py-2 bg-primary/10 hover:bg-primary/20 rounded-lg focus:outline-none resize-none overflow-hidden"
         style={{ minHeight: "2.5rem" }}
         rows={1}
       />

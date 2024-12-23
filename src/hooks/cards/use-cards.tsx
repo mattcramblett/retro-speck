@@ -1,19 +1,17 @@
-"use client"
+"use client";
 import { getCards } from "@/lib/server-actions/card-actions";
 import { Card } from "@/types/model";
-import { useQuery } from "@tanstack/react-query";
+import { queryOptions, useQuery } from "@tanstack/react-query";
 
-export function useCards({
-  retroId,
-  initialData
-}: {
-  retroId: number,
-  initialData: Card[],
-}) {
-  return useQuery({
+export type CardsQueryDeps = {
+  retroId: number;
+  initialData?: Card[];
+};
+
+export const cardsQuery = ({ retroId, initialData }: CardsQueryDeps) =>
+  queryOptions({
     queryKey: ["retro", retroId, "cards"],
     queryFn: () => getCards(retroId),
     initialData,
   });
-}
 
