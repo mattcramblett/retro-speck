@@ -20,7 +20,7 @@ export default async function RetroBoardPage({
 }: {
   params: { publicId: string };
 }) {
-  const { publicId } = params;
+  const { publicId } = await params;
   const user = await getUserOrThrow(); // Middleware should assert the user exists.
 
   const retro = await getRetro(publicId);

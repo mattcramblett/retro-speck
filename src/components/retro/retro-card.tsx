@@ -1,14 +1,31 @@
 "use client";
 import { DynamicTextarea } from "@/components/ui/dynamic-textarea";
-import { useState } from "react";
+import { Card } from "@/types/model";
+import { useState, useRef } from "react";
+import { useUpdateCard } from "@/hooks/cards/use-update-card";
+import { debounce } from "throttle-debounce";
 
-export function RetroCard({ content }: { content: string | null | undefined }) {
-  const [value, setValue] = useState(content || "");
+export function RetroCard({ initialCard }: { initialCard: Card }) {
+  const [card, setCard] = useState<Card>(initialCard);
+  const { mutateAsync } = useUpdateCard(card.id);
+
+  const debouncedUpdate = useRef(
+    debounce(1000, async (c: Partial<Card>) => setCard(await mutateAsync(c))),
+  );
+
+  const handleUpdate = (content: string) => {
+    // Not ideal to have a side-effect within a state setter callback
+    setCard((c: Card) => {
+      const updatedCard = { ...c, content };
+      debouncedUpdate.current(updatedCard);
+      return updatedCard;
+    });
+  };
 
   return (
     <DynamicTextarea
-      value={value}
-      onChange={(e) => setValue(e.target.value || "")}
+      value={card.content || ""}
+      onChange={(e) => handleUpdate(e.target.value || "")}
     />
   );
 }

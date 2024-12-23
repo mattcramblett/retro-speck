@@ -23,25 +23,28 @@ export function RetroBoard({
     retroId,
     initialData: initialCards,
   });
-  
+
   return (
     <div className="flex h-full p-4 gap-4 max-h-full overflow-x-auto tiny-scrollbar overscroll-x-none">
       {initialColumns.map((column) => (
-        <div
-          key={column.id}
-          className="flex flex-col max-h-full overflow-y-scroll tiny-scrollbar bg-card items-center gap-4 py-4 px-3 border border-primary/10 rounded-lg min-w-80 max-w-80"
-        >
-          <div className="flex w-full items-start py-2 px-2">
+        <div key={column.id} className="flex flex-col items-center">
+          <div className="flex w-full items-start pb-4 px-2 overflow-x-scroll">
             <h2 className="font-black text-xl">{column.name}</h2>
           </div>
-          <Button variant="outline" className="w-full min-h-10">
-            <Plus />
-          </Button>
-          {cards
-            .filter((c) => c.retroColumnId === column.id)
-            .map((card) => (
-              <RetroCard key={card.id} content={card.content} />
-            ))}
+          <div
+            key={column.id}
+            className="flex flex-col max-h-full overflow-y-scroll tiny-scrollbar bg-card items-center gap-4 py-4 px-3 border border-primary/10 rounded-lg min-w-80 max-w-80"
+          >
+            <Button variant="outline" className="w-full min-h-10">
+              <Plus />
+            </Button>
+            {cards
+              .filter((c) => c.retroColumnId === column.id)
+              .sort((a, b) => a.id - b.id) // sort for consistency
+              .map((card) => (
+                <RetroCard key={card.id} initialCard={card} />
+              ))}
+          </div>
         </div>
       ))}
     </div>
