@@ -7,7 +7,6 @@ import {
 import { getColumns } from "@/lib/repositories/column-repository";
 import { getCards } from "@/lib/repositories/card-repository";
 import { getUserOrThrow } from "@/lib/server-actions/authN-actions";
-import { Suspense } from "react";
 import { RetroBoard } from "@/components/retro/retro-board";
 
 const WaitingRoom = () => (
@@ -42,10 +41,10 @@ export default async function RetroBoardPage({
   return (
     <main className="size-full flex overflow-y-hidden justify-center">
       <RetroBoard
-        retro={retro}
-        columns={columns}
-        cards={cards}
-        participants={participants}
+        initialRetro={retro}
+        initialColumns={columns}
+        initialCards={cards}
+        initialParticipants={participants}
       />
     </main>
   );

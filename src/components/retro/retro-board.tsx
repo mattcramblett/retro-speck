@@ -2,21 +2,31 @@
 
 import { Card, Column, Participant, Retro } from "@/types/model";
 import { RetroCard } from "./retro-card";
+import { Button } from "../ui/button";
+import { Plus } from "lucide-react";
+import { useCards } from "@/hooks/cards/use-cards";
 
 export function RetroBoard({
-  retro,
-  columns,
-  cards,
-  participants,
+  initialRetro,
+  initialColumns,
+  initialCards,
+  initialParticipants,
 }: {
-  retro: Retro;
-  columns: Column[];
-  cards: Card[];
-  participants: Participant[];
+  initialRetro: Retro;
+  initialColumns: Column[];
+  initialCards: Card[];
+  initialParticipants: Participant[];
 }) {
+  const retroId = initialRetro.id;
+
+  const { data: cards } = useCards({
+    retroId,
+    initialData: initialCards,
+  });
+  
   return (
     <div className="flex h-full p-4 gap-4 max-h-full overflow-x-auto tiny-scrollbar overscroll-x-none">
-      {columns.map((column) => (
+      {initialColumns.map((column) => (
         <div
           key={column.id}
           className="flex flex-col max-h-full overflow-y-scroll tiny-scrollbar bg-card items-center gap-4 py-4 px-3 border border-primary/10 rounded-lg min-w-80 max-w-80"
@@ -24,6 +34,9 @@ export function RetroBoard({
           <div className="flex w-full items-start py-2 px-2">
             <h2 className="font-black text-xl">{column.name}</h2>
           </div>
+          <Button variant="outline" className="w-full min-h-10">
+            <Plus />
+          </Button>
           {cards
             .filter((c) => c.retroColumnId === column.id)
             .map((card) => (
