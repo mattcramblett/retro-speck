@@ -1,5 +1,5 @@
 import { Title } from "@/components/brand/title";
-import { getCurrentUser } from "@/lib/server-actions/auth-actions";
+import { getCurrentUser } from "@/lib/server-actions/authN-actions";
 import { CreateRetroForm } from "@/components/home/create-retro-form";
 
 export default async function Home() {

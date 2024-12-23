@@ -1,22 +1,10 @@
-"use server"
-import { db } from "@/db";
-import { getUserOrThrow } from "./auth-actions";
-import { participantsInRetroSpeck as participantTable } from "@/db/schema";
-import { and, eq } from "drizzle-orm";
+"use server";
 import { Participant } from "@/types/model";
+import { getParticipants as queryParticipants } from "../repositories/participant-repository";
+import { assertAccess } from "./authZ-action";
 
-export async function getParticipant(retroId: number): Promise<Participant> {
-  const user = await getUserOrThrow();
-  const results = await db.select()
-    .from(participantTable)
-    .where(
-      and(
-        eq(participantTable.retroId, retroId),
-        eq(participantTable.userId, user.id),
-      ),
-    )
-    .limit(1);
-  const participant = results[0];
-  if (!participant) throw "Not found"
-  return participant as Participant;
+export async function getParticipants(retroId: number): Promise<Participant[]> {
+  assertAccess(retroId);
+  return await queryParticipants(retroId);
 }
+

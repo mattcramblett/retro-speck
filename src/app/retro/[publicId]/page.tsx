@@ -1,40 +1,52 @@
-import { getCards } from "@/lib/server-actions/card-actions";
-import { getColumns } from "@/lib/server-actions/column-actions";
-import { getParticipant } from "@/lib/server-actions/participants-actions";
-import { getRetro } from "@/lib/server-actions/retro-actions";
+"use server";
+import { getRetro } from "@/lib/repositories/retro-repository";
+import {
+  ensureParticipant,
+  getParticipants,
+} from "@/lib/repositories/participant-repository";
+import { getColumns } from "@/lib/repositories/column-repository";
+import { getCards } from "@/lib/repositories/card-repository";
+import { getUserOrThrow } from "@/lib/server-actions/authN-actions";
+import { Suspense } from "react";
+import { RetroBoard } from "@/components/retro/retro-board";
 
-export default async function RetroBoard({
+const WaitingRoom = () => (
+  <h1 className="font-black text-2xl">
+    Waiting for the facilitator to let you in
+  </h1>
+);
+
+export default async function RetroBoardPage({
   params,
 }: {
   params: { publicId: string };
 }) {
   const { publicId } = params;
+  const user = await getUserOrThrow(); // Middleware should assert the user exists.
+
   const retro = await getRetro(publicId);
-  const participant = await getParticipant(retro.id);
+  const currentParticipant = await ensureParticipant({
+    retroId: retro.id,
+    email: user.email || "unkown",
+    userId: user.id,
+  });
+
+  if (!currentParticipant.isAccepted) {
+    return WaitingRoom();
+  }
+
+  const participants = await getParticipants(retro.id);
   const columns = await getColumns(retro.id);
   const cards = await getCards(retro.id);
 
   return (
-    <main className="size-full flex justify-center">
-      <div className="container">
-        <h1 className="font-black text-xl">Retro</h1>
-        <p>
-          {JSON.stringify(retro,null,2)}
-        </p>
-        <hr />
-        <h1 className="font-black text-xl">Participant</h1>
-        <p>
-          {JSON.stringify(participant,null,2)}
-        </p>
-        <h1 className="font-black text-xl">Columns</h1>
-        <p>
-          {JSON.stringify(columns,null,2)}
-        </p>
-        <h1 className="font-black text-xl">Cards</h1>
-        <p>
-          {JSON.stringify(cards,null,2)}
-        </p>
-      </div>
+    <main className="size-full flex overflow-y-hidden justify-center">
+      <RetroBoard
+        retro={retro}
+        columns={columns}
+        cards={cards}
+        participants={participants}
+      />
     </main>
   );
 }

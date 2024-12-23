@@ -1,18 +1,10 @@
 "use server";
-
-import { db } from "@/db";
-import {
-  cardsInRetroSpeck as cardTable,
-  retroColumnsInRetroSpeck as columnTable,
-} from "@/db/schema";
 import { Card } from "@/types/model";
-import { eq } from "drizzle-orm";
+import { getCards as queryCards } from "../repositories/card-repository";
+import { assertAccess } from "./authZ-action";
 
 export async function getCards(retroId: number): Promise<Card[]> {
-  const results = await db
-    .select()
-    .from(cardTable)
-    .fullJoin(columnTable, eq(columnTable.id, cardTable.retroColumnId))
-    .where(eq(columnTable.retroId, retroId));
-  return results.map(it => it.cards).filter(it => !!it);
+  assertAccess(retroId);
+  return await queryCards(retroId);
 }
+
