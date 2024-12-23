@@ -1,6 +1,7 @@
 "use client";
 
 import { Card, Column, Participant, Retro } from "@/types/model";
+import { RetroCard } from "./retro-card";
 
 export function RetroBoard({
   retro,
@@ -26,12 +27,7 @@ export function RetroBoard({
           {cards
             .filter((c) => c.retroColumnId === column.id)
             .map((card) => (
-              <div
-                key={card.id}
-                className="p-4 bg-primary/10 rounded-lg hover:bg-primary/20 transition-colors w-full"
-              >
-                {card.content}
-              </div>
+              <RetroCard key={card.id} content={card.content} />
             ))}
         </div>
       ))}

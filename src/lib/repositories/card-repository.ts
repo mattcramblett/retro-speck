@@ -4,7 +4,7 @@ import {
   retroColumnsInRetroSpeck as columnTable,
 } from "@/db/schema";
 import { Card } from "@/types/model";
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 
 export async function getCards(retroId: number): Promise<Card[]> {
   const results = await db
@@ -12,7 +12,7 @@ export async function getCards(retroId: number): Promise<Card[]> {
     .from(cardTable)
     .fullJoin(columnTable, eq(columnTable.id, cardTable.retroColumnId))
     .where(eq(columnTable.retroId, retroId))
-    .orderBy(cardTable.createdAt);
+    .orderBy(desc(cardTable.createdAt));
   return results.map(it => it.cards).filter(it => !!it);
 }
 
