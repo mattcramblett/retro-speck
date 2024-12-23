@@ -4,9 +4,7 @@ import { Card, Column, Participant, Retro } from "@/types/model";
 import { RetroCard } from "./retro-card";
 import { Button } from "../ui/button";
 import { Plus } from "lucide-react";
-import { cardsQuery } from "@/hooks/cards/use-cards";
-import { useCreateCard } from "@/hooks/cards/use-create-card";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useRetroCards } from "@/hooks/cards/use-retro-cards";
 
 export function RetroBoard({
   initialRetro,
@@ -20,19 +18,13 @@ export function RetroBoard({
   initialParticipants: Participant[];
 }) {
   const retroId = initialRetro.id;
-  const queryClient = useQueryClient();
-
-  const cardsQueryOpts = cardsQuery({ retroId, initialData: initialCards });
-  const { data: cards } = useQuery(cardsQueryOpts);
-
-  const handleAddCard = (data: Card) =>
-    queryClient.setQueryData(
-      cardsQueryOpts.queryKey,
-      (prev: Card[] | undefined) => [data, ...(prev || [])],
-    );
-  const { mutate: createCard, isPending: isCreateCardPending } = useCreateCard({
-    onSuccess: handleAddCard
+  const { useCards, useCreateCard } = useRetroCards({
+    retroId,
+    initialData: initialCards,
   });
+  const { data: cards } = useCards();
+  const { mutate: createCard, isPending: isCreateCardPending } =
+    useCreateCard();
 
   return (
     <div className="flex h-full p-4 gap-4 max-h-full overflow-x-auto tiny-scrollbar overscroll-x-none">
@@ -56,7 +48,9 @@ export function RetroBoard({
             {cards
               ?.filter((c) => c.retroColumnId === column.id)
               .sort((a, b) => b.id - a.id) // sort for consistency
-              .map((card) => <RetroCard key={card.id} initialCard={card} />)}
+              .map((card) => (
+                <RetroCard key={card.id} retroId={retroId} initialCard={card} />
+              ))}
           </div>
         </div>
       ))}

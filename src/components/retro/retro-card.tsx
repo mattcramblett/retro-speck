@@ -1,12 +1,14 @@
 "use client";
 import { DynamicTextarea } from "@/components/ui/dynamic-textarea";
+import { useRetroCards } from "@/hooks/cards/use-retro-cards";
 import { Card } from "@/types/model";
 import { useState, useRef } from "react";
-import { useUpdateCard } from "@/hooks/cards/use-update-card";
 import { debounce } from "throttle-debounce";
 
-export function RetroCard({ initialCard }: { initialCard: Card }) {
+export function RetroCard({ retroId, initialCard }: { retroId: number, initialCard: Card }) {
   const [card, setCard] = useState<Card>(initialCard);
+  
+  const { useUpdateCard } = useRetroCards({ retroId });
   const { mutateAsync } = useUpdateCard(card.id);
 
   const debouncedUpdate = useRef(
