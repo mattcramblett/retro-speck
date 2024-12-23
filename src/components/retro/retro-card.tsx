@@ -12,6 +12,7 @@ export function RetroCard({ initialCard }: { initialCard: Card }) {
   const debouncedUpdate = useRef(
     debounce(1000, async (c: Partial<Card>) => setCard(await mutateAsync(c))),
   );
+  // TODO: Should this just be a 'useCard' query with initialData?
 
   const handleUpdate = (content: string) => {
     // Not ideal to have a side-effect within a state setter callback

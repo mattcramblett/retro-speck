@@ -24,12 +24,14 @@ export function RetroBoard({
 
   const cardsQueryOpts = cardsQuery({ retroId, initialData: initialCards });
   const { data: cards } = useQuery(cardsQueryOpts);
+
+  const handleAddCard = (data: Card) =>
+    queryClient.setQueryData(
+      cardsQueryOpts.queryKey,
+      (prev: Card[] | undefined) => [data, ...(prev || [])],
+    );
   const { mutate: createCard, isPending: isCreateCardPending } = useCreateCard({
-    onSuccess: (data) =>
-      queryClient.setQueryData(cardsQueryOpts.queryKey, (prev: Card[]) => [
-        data,
-        ...prev,
-      ]),
+    onSuccess: handleAddCard
   });
 
   return (
