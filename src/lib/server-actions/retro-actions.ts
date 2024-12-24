@@ -17,7 +17,7 @@ export async function createRetro(name: string): Promise<string> {
   // NOTE: AuthZ check is just an authenticated user. There should be probably be some form of rate limiting here.
   const user = await getUserOrThrow();
   return await insertRetro({
-    name,
+    name: name.replaceAll(/<|>/g, ""),
     userId: user.id,
     email: user.email || "unknown",
   });
