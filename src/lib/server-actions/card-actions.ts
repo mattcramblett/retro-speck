@@ -21,6 +21,7 @@ export async function createCard(columnId: number): Promise<Card> {
 
 export async function updateCard(card: Partial<Card>): Promise<Card> {
   const cardId = card.id;
+  card.content = card.content?.replaceAll(/<|>/g, "");
   if (!cardId) throw "Must set cardId for update";
   assertAccessToCard(cardId);
   return await persistCard(card); 

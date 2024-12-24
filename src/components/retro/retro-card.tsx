@@ -20,8 +20,9 @@ export function RetroCard({
   useEffect(() => setContent(card?.content || ""), [card?.content]);
 
   const handleUpdate = (updatedContent: string) => {
-    setContent(updatedContent);
-    updateCard({ ...(card || initialCard), content: updatedContent });
+    const content = updatedContent.replaceAll(/<|>/g, "");
+    setContent(content);
+    updateCard({ ...(card || initialCard), content });
   };
 
   return (
