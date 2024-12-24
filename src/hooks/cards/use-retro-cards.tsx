@@ -41,6 +41,7 @@ export const cardQuery = ({ retroId, cardId, initialData }: CardDeps) =>
     queryKey: ["retro", retroId, "cards", cardId],
     queryFn: () => getCard(cardId),
     initialData,
+    staleTime: Infinity, // No automatic refetch
   });
 
 // Aggregate hook for Retro Cards
