@@ -29,31 +29,21 @@ export const cardsQuery = ({ retroId, initialData }: CardsDeps) =>
     initialData,
   });
 
-// Query for individual card
-export type CardDeps = {
-  retroId: number;
-  cardId: number;
-  initialData?: Card;
-};
-
-export const cardQuery = ({ retroId, cardId, initialData }: CardDeps) =>
-  queryOptions({
-    queryKey: ["retro", retroId, "cards", cardId],
-    queryFn: () => getCard(cardId),
-    initialData,
-    staleTime: Infinity, // No automatic refetch
-  });
-
 // Aggregate hook for Retro Cards
 export const useRetroCards = ({ retroId, initialData }: CardsDeps) => {
   const queryClient = useQueryClient();
   const queryOpts = cardsQuery({ retroId, initialData });
 
   // Main query - all cards
-  const useCards = () => useQuery(queryOpts);
+  const useCards = (opts?: Partial<typeof cardsQuery>) =>
+    useQuery({ ...queryOpts, ...(opts || {}) });
 
-  // Individual query - single card
-  const useCard = (deps: CardDeps) => useQuery(cardQuery(deps));
+  // Indiviudal query - specific card
+  const useCard = (cardId: number) =>
+    useQuery({
+      ...queryOpts,
+      select: (cards) => cards.find((c) => c.id === cardId), // filter down to specific card
+    });
 
   // Side-effects - mutation results hook into the main query
   const handleCreateCard = (data: Card) =>
@@ -79,18 +69,7 @@ export const useRetroCards = ({ retroId, initialData }: CardsDeps) => {
   const useUpdateCard = (cardId: number) => {
     return useMutation({
       mutationKey: ["cards", cardId, "update"],
-      mutationFn: async (card: Card) => {
-        // Ensure local state of query is updated
-        queryClient.setQueryData(
-          cardQuery({ cardId: card.id, retroId }).queryKey,
-          card,
-        );
-        return card;
-      },
-      onSuccess: (card) => {
-        // Debounce updates to the server
-        debouncedUpdate.current(card);
-      }
+      mutationFn: async (card: Card) => debouncedUpdate.current(card),
     });
   };
 
