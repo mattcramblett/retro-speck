@@ -8,9 +8,11 @@ import { useState, useEffect } from "react";
 export function RetroCard({
   retroId,
   initialCard,
+  editingEnabled,
 }: {
   retroId: number;
   initialCard: Card;
+  editingEnabled?: boolean;
 }) {
   const { useUpdateCard, useCard } = useRetroCards({ retroId });
   const { data: card } = useCard(initialCard.id);
@@ -33,7 +35,7 @@ export function RetroCard({
     <DynamicTextarea
       value={content}
       onChange={(e) => handleUpdate(e.target.value || "")}
-      disabled={participant?.id !== card?.participantId}
+      disabled={participant?.id !== card?.participantId || !editingEnabled}
     />
   );
 }

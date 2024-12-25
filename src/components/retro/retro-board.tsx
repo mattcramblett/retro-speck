@@ -1,6 +1,14 @@
 "use client";
 
-import { Card, Column, Participant, Retro } from "@/types/model";
+import {
+  Card,
+  Column,
+  getPhase,
+  Participant,
+  PhaseName,
+  phases,
+  Retro,
+} from "@/types/model";
 import { RetroCard } from "./retro-card";
 import { useRetroCards } from "@/hooks/cards/use-retro-cards";
 import { useRetro } from "@/hooks/retros/use-retro";
@@ -20,6 +28,7 @@ export function RetroBoard({
 }) {
   const retroId = initialRetro.id;
   const { data: retro } = useRetro(retroId, { initialData: initialRetro });
+  const phase = getPhase(retro?.phase);
 
   const { useCards, useCreateCard } = useRetroCards({
     retroId,
@@ -41,7 +50,12 @@ export function RetroBoard({
             ?.filter((c) => c.retroColumnId === column.id)
             .sort((a, b) => b.id - a.id) // sort for consistency
             .map((card) => (
-              <RetroCard key={card.id} retroId={retroId} initialCard={card} />
+              <RetroCard
+                key={card.id}
+                retroId={retroId}
+                initialCard={card}
+                editingEnabled={phase.isDraftState}
+              />
             ))}
         </RetroColumn>
       ))}

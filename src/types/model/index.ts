@@ -54,3 +54,7 @@ export const phases: Record<PhaseName, Phase> = {
   },
 }
 
+export const getPhase = (phaseName?: string) => {
+  return phases[phaseName  as PhaseName|| "setup"] || phases.setup;
+}
+
