@@ -6,6 +6,7 @@ import { Button } from "../ui/button";
 import { Plus } from "lucide-react";
 import { useRetroCards } from "@/hooks/cards/use-retro-cards";
 import { useRetro } from "@/hooks/retros/use-retro";
+import { RetroColumn } from "./retro-column";
 
 export function RetroBoard({
   initialRetro,
@@ -20,7 +21,7 @@ export function RetroBoard({
 }) {
   const retroId = initialRetro.id;
   const { data: retro } = useRetro(retroId, { initialData: initialRetro });
-  
+
   const { useCards, useCreateCard } = useRetroCards({
     retroId,
     initialData: initialCards,
@@ -32,30 +33,22 @@ export function RetroBoard({
   return (
     <div className="flex h-full p-4 gap-4 max-h-full overflow-x-auto tiny-scrollbar overscroll-x-none">
       {initialColumns.map((column) => (
-        <div key={column.id} className="flex flex-col items-center gap-4">
-          <div className="flex min-h-8 w-full items-start px-2 overflow-x-scroll">
-            <h2 className="font-black text-xl">{column.name}</h2>
-          </div>
-          <div
-            key={column.id}
-            className="flex flex-col max-h-full overflow-y-scroll tiny-scrollbar bg-card items-center gap-4 py-4 px-3 border border-primary/10 rounded-lg min-w-80 max-w-80"
+        <RetroColumn key={column.id} name={column.name}>
+          <Button
+            variant="outline"
+            className="w-full min-h-10"
+            onClick={() => createCard(column.id)}
+            disabled={isCreateCardPending}
           >
-            <Button
-              variant="outline"
-              className="w-full min-h-10"
-              onClick={() => createCard(column.id)}
-              disabled={isCreateCardPending}
-            >
-              <Plus />
-            </Button>
-            {cards
-              ?.filter((c) => c.retroColumnId === column.id)
-              .sort((a, b) => b.id - a.id) // sort for consistency
-              .map((card) => (
-                <RetroCard key={card.id} retroId={retroId} initialCard={card} />
-              ))}
-          </div>
-        </div>
+            <Plus />
+          </Button>
+          {cards
+            ?.filter((c) => c.retroColumnId === column.id)
+            .sort((a, b) => b.id - a.id) // sort for consistency
+            .map((card) => (
+              <RetroCard key={card.id} retroId={retroId} initialCard={card} />
+            ))}
+        </RetroColumn>
       ))}
     </div>
   );
