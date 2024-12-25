@@ -7,6 +7,7 @@ interface DynamicTextareaProps {
   label?: string;
   placeholder?: string;
   maxHeight?: number;
+  disabled?: boolean;
 }
 
 export function DynamicTextarea({
@@ -15,6 +16,7 @@ export function DynamicTextarea({
   label,
   placeholder = "",
   maxHeight = 400,
+  disabled = false,
 }: DynamicTextareaProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -46,6 +48,7 @@ export function DynamicTextarea({
         ref={textareaRef}
         value={value}
         onChange={onChange}
+        disabled={disabled}
         placeholder={placeholder}
         className="transition-all font-medium w-full px-3 py-2 bg-primary/10 hover:bg-primary/20 rounded-lg focus:outline-none resize-none overflow-hidden"
         style={{ minHeight: "2.5rem" }}
