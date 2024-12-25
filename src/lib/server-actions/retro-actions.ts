@@ -7,9 +7,9 @@ import {
 import { assertAccess } from "./authZ-action";
 import { getUserOrThrow } from "./authN-actions";
 
-export async function getRetro(publicId: string): Promise<Retro> {
-  const retro = await queryRetro(publicId);
-  await assertAccess(retro.id);
+export async function getRetro(retroId: number): Promise<Retro> {
+  const retro = await queryRetro(retroId);
+  await assertAccess(retroId);
   return retro;
 }
 

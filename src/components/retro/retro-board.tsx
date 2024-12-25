@@ -5,6 +5,7 @@ import { RetroCard } from "./retro-card";
 import { Button } from "../ui/button";
 import { Plus } from "lucide-react";
 import { useRetroCards } from "@/hooks/cards/use-retro-cards";
+import { useRetro } from "@/hooks/retros/use-retro";
 
 export function RetroBoard({
   initialRetro,
@@ -18,6 +19,8 @@ export function RetroBoard({
   initialParticipants: Participant[];
 }) {
   const retroId = initialRetro.id;
+  const { data: retro } = useRetro(retroId, { initialData: initialRetro });
+  
   const { useCards, useCreateCard } = useRetroCards({
     retroId,
     initialData: initialCards,

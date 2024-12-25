@@ -6,9 +6,20 @@ import {
 } from "@/db/schema";
 import { uuidv4 } from "../utils";
 import { eq } from "drizzle-orm";
-import { Retro } from "@/types/model";
+import { phases, Retro } from "@/types/model";
 
-export async function getRetro(publicId: string): Promise<Retro> {
+export async function getRetro(retroId: number): Promise<Retro> {
+  const results = await db
+    .select()
+    .from(retroTable)
+    .where(eq(retroTable.id, retroId))
+    .limit(1);
+  const retro = results[0];
+  if (!retro) throw "Not found";
+  return retro as Retro;
+}
+
+export async function getRetroByPublicId(publicId: string): Promise<Retro> {
   const results = await db
     .select()
     .from(retroTable)
@@ -39,7 +50,7 @@ export async function createRetro({
         facilitatorUserId: userId,
         publicId,
         name,
-        phase: "created",
+        phase: phases.setup.name,
       })
       .returning();
     const retroId = retro[0].id;

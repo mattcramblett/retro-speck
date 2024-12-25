@@ -1,5 +1,5 @@
 "use server";
-import { getRetro } from "@/lib/repositories/retro-repository";
+import { getRetro, getRetroByPublicId } from "@/lib/repositories/retro-repository";
 import {
   ensureParticipant,
   getParticipants,
@@ -20,10 +20,10 @@ export default async function RetroBoardPage({
 }: {
   params: { publicId: string };
 }) {
-  const { publicId } = await params;
+  const { publicId } = params;
   const user = await getUserOrThrow(); // Middleware should assert the user exists.
 
-  const retro = await getRetro(publicId);
+  const retro = await getRetroByPublicId(publicId);
   const currentParticipant = await ensureParticipant({
     retroId: retro.id,
     email: user.email || "unkown",
