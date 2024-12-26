@@ -9,16 +9,17 @@ export function ConnectionStatus({ retroPublicId }: { retroPublicId: string }) {
   const [showFull, setShowFull] = useState(true); // Show wider pill, vs show just the icon
 
   useEffect(() => {
-    setTimeout(() => setShowFull(false), 2000);
-  }, []);
+    const timeout = setTimeout(() => setShowFull(false), 2000);
+    return () => clearTimeout(timeout);
+  }, [showFull]);
 
   const Content = (icon: ReactNode, text: ReactNode) => (
-    <div className="flex items-center gap-2 rounded-full border border-secondary-muted p-2">
+    <div className="flex items-center gap-2 w-fit rounded-full border border-secondary-muted p-2 select-none transition-all">
       {icon}
       <div
         className={cn(
-          "animate-out animate-in",
-          showFull ? "w-full" : "w-0 hidden",
+          "animate-out animate-in pr-2",
+          showFull ? "w-fit" : "w-0 hidden",
         )}
       >
         {text}
@@ -27,10 +28,7 @@ export function ConnectionStatus({ retroPublicId }: { retroPublicId: string }) {
   );
 
   const handleClick = () => {
-    setShowFull((prev) => {
-      if (!prev) setTimeout(() => setShowFull(false), 2000);
-      return !prev;
-    });
+    setShowFull((prev) => !prev);
   };
 
   return (
