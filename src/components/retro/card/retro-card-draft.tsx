@@ -5,7 +5,7 @@ import { useParticipants } from "@/hooks/participants/use-participants";
 import { Card } from "@/types/model";
 import { useState, useEffect } from "react";
 
-export function RetroCard({
+export function RetroCardDraft({
   retroId,
   initialCard,
   isDraftState,

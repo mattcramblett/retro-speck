@@ -13,6 +13,7 @@ export type Phase = {
   index: number,
   description: string,
   isDraftState: boolean,
+  columnLayout: boolean,
 };
 
 export const phases: Record<PhaseName, Phase> = {
@@ -21,36 +22,42 @@ export const phases: Record<PhaseName, Phase> = {
     index: 0,
     description: "Add and edit columns.",
     isDraftState: true,
+    columnLayout: true,
   },
   brainstorm: {
     name: "brainstorm",
     index: 1,
     description: "Add cards to the board.",
     isDraftState: true,
+    columnLayout: true,
   },
   grouping: {
     name: "grouping",
     index: 2,
     description: "Group similar cards together into topics.",
     isDraftState: false,
+    columnLayout: true,
   },
   voting: {
     name: "voting",
     index: 3,
     description: "Vote on the topics you want to discuss.",
     isDraftState: false,
+    columnLayout: true,
   },
   discussion: {
     name: "discussion",
     index: 4,
     description: "Take time to discuss each topic.",
     isDraftState: false,
+    columnLayout: false,
   },
   complete: {
     name: "complete",
     index: 5,
     description: "The retrospective is complete!",
     isDraftState: false,
+    columnLayout: false,
   },
 }
 
