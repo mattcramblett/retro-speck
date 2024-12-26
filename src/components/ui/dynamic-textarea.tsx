@@ -53,7 +53,8 @@ export function DynamicTextarea({
         onChange={onChange}
         disabled={disabled}
         placeholder={placeholder}
-        className={cn("transition-all font-medium w-full px-3 py-2 bg-primary/10 hover:bg-primary/20 rounded-lg focus:outline-none resize-none overflow-hidden disabled:hover:cursor-default", obfuscate ? "blur-sm" : null)}
+        readOnly={obfuscate}
+        className={cn("transition-all font-medium w-full px-3 py-2 bg-primary/10 hover:bg-primary/20 rounded-lg focus:outline-none resize-none overflow-hidden disabled:hover:cursor-default", obfuscate ? "blur-sm select-none focus:outline-none" : null)}
         style={{ minHeight: "2.5rem" }}
         rows={1}
       />

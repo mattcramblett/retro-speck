@@ -37,7 +37,7 @@ export function RetroCard({
     <DynamicTextarea
       value={content}
       onChange={(e) => handleUpdate(e.target.value || "")}
-      disabled={!isDraftState || participantOwnsCard}
+      disabled={!isDraftState || !participantOwnsCard}
       obfuscate={isDraftState && !participantOwnsCard}
     />
   );
