@@ -1,5 +1,5 @@
 "use server";
-import { getRetro, getRetroByPublicId } from "@/lib/repositories/retro-repository";
+import { getRetroByPublicId } from "@/lib/repositories/retro-repository";
 import {
   ensureParticipant,
   getParticipants,
@@ -36,7 +36,7 @@ export default async function RetroBoardPage({
 
   const participants = await getParticipants(retro.id);
   const columns = await getColumns(retro.id);
-  const cards = await getCards(retro.id);
+  const cards = await getCards(retro.id, user.id);
 
   return (
     <main className="size-full flex overflow-y-hidden justify-center">

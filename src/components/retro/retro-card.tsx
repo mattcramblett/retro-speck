@@ -8,11 +8,11 @@ import { useState, useEffect } from "react";
 export function RetroCard({
   retroId,
   initialCard,
-  editingEnabled,
+  isDraftState,
 }: {
   retroId: number;
   initialCard: Card;
-  editingEnabled?: boolean;
+  isDraftState?: boolean;
 }) {
   const { useUpdateCard, useCard } = useRetroCards({ retroId });
   const { data: card } = useCard(initialCard.id);
@@ -31,11 +31,14 @@ export function RetroCard({
     updateCard({ ...(card || initialCard), content });
   };
 
+  const participantOwnsCard = card?.participantId === participant?.id;
+
   return (
     <DynamicTextarea
       value={content}
       onChange={(e) => handleUpdate(e.target.value || "")}
-      disabled={participant?.id !== card?.participantId || !editingEnabled}
+      disabled={!isDraftState || participantOwnsCard}
+      obfuscate={isDraftState && !participantOwnsCard}
     />
   );
 }

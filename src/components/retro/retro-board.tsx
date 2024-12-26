@@ -54,7 +54,7 @@ export function RetroBoard({
                 key={card.id}
                 retroId={retroId}
                 initialCard={card}
-                editingEnabled={phase.isDraftState}
+                isDraftState={phase.isDraftState}
               />
             ))}
         </RetroColumn>

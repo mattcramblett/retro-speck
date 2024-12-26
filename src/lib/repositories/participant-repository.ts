@@ -13,6 +13,23 @@ export async function getParticipants(retroId: number): Promise<Participant[]> {
   return results as Participant[];
 }
 
+export async function getCurrentParticipant(retroId: number, userId: string): Promise<Participant> {
+  const maybeResults = await db
+    .select()
+    .from(participantTable)
+    .where(
+      and(
+        eq(participantTable.userId, userId),
+        eq(participantTable.retroId, retroId),
+      ),
+    )
+    .limit(1);
+  if (maybeResults.length) {
+    return maybeResults[0] as Participant;
+  }
+  throw "Participant not found";
+}
+
 // Find or create by (retroId, userId)
 export async function ensureParticipant({
   retroId,
@@ -23,7 +40,7 @@ export async function ensureParticipant({
   userId: string;
   email: string;
 }): Promise<Participant> {
-  const maybeResuls = await db
+  const maybeResults = await db
     .select()
     .from(participantTable)
     .where(
@@ -33,8 +50,8 @@ export async function ensureParticipant({
       ),
     )
     .limit(1);
-  if (maybeResuls.length) {
-    return maybeResuls[0] as Participant;
+  if (maybeResults.length) {
+    return maybeResults[0] as Participant;
   }
 
   const results = await db

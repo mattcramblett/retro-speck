@@ -38,23 +38,23 @@ export const phases: Record<PhaseName, Phase> = {
     name: "voting",
     index: 3,
     description: "Vote on the topics you want to discuss.",
-    isDraftState: true,
+    isDraftState: false,
   },
   discussion: {
     name: "discussion",
     index: 4,
     description: "Take time to discuss each topic.",
-    isDraftState: true,
+    isDraftState: false,
   },
   complete: {
     name: "complete",
     index: 5,
     description: "The retrospective is complete!",
-    isDraftState: true,
+    isDraftState: false,
   },
 }
 
 export const getPhase = (phaseName?: string) => {
-  return phases[phaseName  as PhaseName|| "setup"] || phases.setup;
+  return phases[phaseName as PhaseName || "setup"] || phases.setup;
 }
 

@@ -11,7 +11,8 @@ export async function getCard(cardId: number): Promise<Card> {
 
 export async function getCards(retroId: number): Promise<Card[]> {
   assertAccess(retroId);
-  return await fetchCards(retroId);
+  const user = await getUserOrThrow();
+  return await fetchCards(retroId, user.id);
 }
 
 export async function createCard(columnId: number): Promise<Card> {
