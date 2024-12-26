@@ -4,6 +4,6 @@ import { getColumns as queryColumns } from "../repositories/column-repository";
 import { assertAccess } from "./authZ-action";
 
 export async function getColumns(retroId: number): Promise<Column[]> {
-  assertAccess(retroId);
+  await assertAccess(retroId);
   return await queryColumns(retroId);
 }

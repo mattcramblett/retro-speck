@@ -1,14 +1,13 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { RealtimeChannel } from "@supabase/supabase-js";
 import { makeBroadcastClient } from "@/clients/broadcast-client";
 import { useToast } from "@/hooks/use-toast";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
+import { useRetroCards } from "@/hooks/cards/use-retro-cards";
 
-export function useRealtime({ retroPublicId }: { retroPublicId: string }) {
-  const router = useRouter();
-  const queryClient = useQueryClient();
+export function useRealtime({ retroPublicId, retroId }: { retroPublicId: string, retroId: number }) {
+  const { onRefreshCard } = useRetroCards({ retroId });
+
   const { toast } = useToast();
   const client = useRef(makeBroadcastClient());
 
@@ -27,7 +26,7 @@ export function useRealtime({ retroPublicId }: { retroPublicId: string }) {
             const cardId = event.payload?.cardId;
             if (!cardId) return;
 
-            // await onRefreshCard(cardId);
+            await onRefreshCard(cardId); // FIXME: This holds an old reference to the queries and will not update.
           })
           .subscribe();
         console.log("Connected to the retro board.");

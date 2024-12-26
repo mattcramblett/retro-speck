@@ -29,6 +29,7 @@ export async function assertAccess(retroId: number) {
   if (!results.length) throw "Not Found";
 }
 
+// If user does not have access, throw error. If they do, return the retro publicId
 export async function assertAccessToCard(cardId: number) {
   // User must be logged in.
   const user = await getUserOrThrow();
@@ -49,5 +50,6 @@ export async function assertAccessToCard(cardId: number) {
       ),
     );
   if (!results.length) throw "Not Found";
+  return results[0].retros.publicId as string;
 }
 

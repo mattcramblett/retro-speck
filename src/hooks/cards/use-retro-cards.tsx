@@ -52,6 +52,23 @@ export const useRetroCards = ({ retroId, initialData }: CardsDeps) => {
       ...(prev || []),
     ]);
 
+  // Realtime hooks - callback trigger when an event is received
+  const onRefreshCard = async (cardId: number) => {
+    // Refresh a card by querying it from the server and placing it in queryData
+    const card = await getCard(cardId);
+    queryClient.setQueryData(queryOpts.queryKey, (prev: Card[] | undefined) => {
+      if (prev === undefined) return prev;
+    
+      const isNew = prev?.findIndex((c) => c.id === cardId) === -1;
+      if (isNew) {
+        return [...(prev || []), card];
+      }
+
+      const result = prev?.map((c) => (c.id === cardId ? card : c));
+      return result;
+    });
+  };
+
   // Mutations
   const useCreateCard = (options?: UseMutationOptions<Card, Error, number>) => {
     return useMutation({
@@ -78,5 +95,6 @@ export const useRetroCards = ({ retroId, initialData }: CardsDeps) => {
     useCard,
     useCreateCard,
     useUpdateCard,
+    onRefreshCard,
   };
 };

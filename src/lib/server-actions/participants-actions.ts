@@ -4,7 +4,7 @@ import { getParticipants as queryParticipants } from "../repositories/participan
 import { assertAccess } from "./authZ-action";
 
 export async function getParticipants(retroId: number): Promise<Participant[]> {
-  assertAccess(retroId);
+  await assertAccess(retroId);
   return await queryParticipants(retroId);
 }
 
