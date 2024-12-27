@@ -3,7 +3,6 @@
 import { Card, Column, getPhase, Participant, Retro } from "@/types/model";
 import { ColumnBoard } from "@/components/retro/board-layout/column-board";
 import { useRetro } from "@/hooks/retros/use-retro";
-import { useRealtime } from "@/hooks/use-realtime";
 
 export function RetroBoard({
   initialRetro,

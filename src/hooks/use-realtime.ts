@@ -11,7 +11,8 @@ export function useRealtime({
   retroPublicId: string;
   retroId: number;
 }) {
-  const { onRefreshCard } = useRetroCards({ retroId });
+  const { useRefreshCard } = useRetroCards({ retroId });
+  const { mutate: refreshCard } = useRefreshCard();
 
   const client = useRef(makeBroadcastClient());
 
@@ -29,7 +30,7 @@ export function useRealtime({
           const cardId = event.payload?.cardId;
           if (!cardId) return;
 
-          await onRefreshCard(cardId); // FIXME: This holds an old reference to the queries and will not update.
+          refreshCard(cardId);
         })
         .subscribe();
       console.log("Connected to the retro board.");
