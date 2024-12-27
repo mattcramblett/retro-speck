@@ -5,7 +5,7 @@ import { useState, useEffect, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 export function ConnectionStatus({ retroId, retroPublicId }: { retroId: number, retroPublicId: string }) {
-  const { isSuccess, isPending, isError } = useRealtime({ retroId, retroPublicId })();
+  const { isSuccess, isPending, isError } = useRealtime({ retroId, retroPublicId });
   const [showFull, setShowFull] = useState(true); // Show wider pill, vs show just the icon
 
   useEffect(() => {

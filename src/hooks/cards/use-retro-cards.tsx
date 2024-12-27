@@ -58,7 +58,7 @@ export const useRetroCards = ({ retroId, initialData }: CardsDeps) => {
     const card = await getCard(cardId);
     queryClient.setQueryData(queryOpts.queryKey, (prev: Card[] | undefined) => {
       if (prev === undefined) return prev;
-    
+
       const isNew = prev?.findIndex((c) => c.id === cardId) === -1;
       if (isNew) {
         return [...(prev || []), card];
