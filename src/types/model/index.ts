@@ -10,6 +10,7 @@ export type PhaseName = "setup" | "brainstorm" | "grouping" | "voting" | "discus
 
 export type Phase = {
   name: PhaseName,
+  label: string,
   index: number,
   description: string,
   isDraftState: boolean,
@@ -19,20 +20,23 @@ export type Phase = {
 export const phases: Record<PhaseName, Phase> = {
   setup: {
     name: "setup",
+    label: "Setup",
     index: 0,
-    description: "Add and edit columns.",
+    description: "Add and edit columns, then move onto brainstorming.",
     isDraftState: true,
     columnLayout: true,
   },
   brainstorm: {
     name: "brainstorm",
+    label: "Brainstorm",
     index: 1,
-    description: "Add cards to the board.",
+    description: "Add cards to the board with topics you'd like to discuss.",
     isDraftState: true,
     columnLayout: true,
   },
   grouping: {
     name: "grouping",
+    label: "Grouping",
     index: 2,
     description: "Group similar cards together into topics.",
     isDraftState: false,
@@ -40,6 +44,7 @@ export const phases: Record<PhaseName, Phase> = {
   },
   voting: {
     name: "voting",
+    label: "Voting",
     index: 3,
     description: "Vote on the topics you want to discuss.",
     isDraftState: false,
@@ -47,6 +52,7 @@ export const phases: Record<PhaseName, Phase> = {
   },
   discussion: {
     name: "discussion",
+    label: "Discussion",
     index: 4,
     description: "Take time to discuss each topic.",
     isDraftState: false,
@@ -54,6 +60,7 @@ export const phases: Record<PhaseName, Phase> = {
   },
   complete: {
     name: "complete",
+    label: "Complete",
     index: 5,
     description: "The retrospective is complete!",
     isDraftState: false,

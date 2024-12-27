@@ -39,7 +39,6 @@ export function RetroCardGrouped({
       value={content}
       onChange={(e) => handleUpdate(e.target.value || "")}
       disabled={!isDraftState || !participantOwnsCard}
-      obfuscate={isDraftState && !participantOwnsCard}
     />
   );
 }

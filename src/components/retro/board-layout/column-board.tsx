@@ -30,7 +30,7 @@ export function ColumnBoard({
     useCreateCard();
 
   return (
-    <>
+    <div className="flex h-full p-4 gap-4 max-h-full overflow-x-auto tiny-scrollbar overscroll-x-none">
       {initialColumns.map((column) => (
         <RetroColumn key={column.id} name={column.name}>
           {phase.name === "brainstorm" && (
@@ -64,6 +64,6 @@ export function ColumnBoard({
             })}
         </RetroColumn>
       ))}
-    </>
+    </div>
   );
 }

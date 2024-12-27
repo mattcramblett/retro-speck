@@ -4,6 +4,7 @@ import { Card, Column, getPhase, Participant, Retro } from "@/types/model";
 import { ColumnBoard } from "@/components/retro/board-layout/column-board";
 import { useRetro } from "@/hooks/retros/use-retro";
 import { ConnectionStatus } from "./connection/connection-status";
+import { PhaseNav } from "./phase/phase-nav";
 
 export function RetroBoard({
   initialRetro,
@@ -26,7 +27,8 @@ export function RetroBoard({
         retroId={retroId}
         retroPublicId={initialRetro.publicId}
       />
-      <div className="flex h-full p-4 gap-4 max-h-full overflow-x-auto tiny-scrollbar overscroll-x-none">
+      <div className="flex flex-col gap-2 size-full">
+        <PhaseNav retroId={retroId} />
         {phase.columnLayout && (
           <ColumnBoard
             initialRetro={initialRetro}
