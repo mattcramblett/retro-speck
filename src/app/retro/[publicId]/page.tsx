@@ -18,9 +18,9 @@ const WaitingRoom = () => (
 export default async function RetroBoardPage({
   params,
 }: {
-  params: { publicId: string };
+  params: Promise<{ publicId: string }>;
 }) {
-  const { publicId } = params;
+  const { publicId } = await params;
   const user = await getUserOrThrow(); // Middleware should assert the user exists.
 
   const retro = await getRetroByPublicId(publicId);
