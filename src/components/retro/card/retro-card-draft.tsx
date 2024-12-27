@@ -34,11 +34,21 @@ export function RetroCardDraft({
   const participantOwnsCard = card?.participantId === participant?.id;
 
   return (
-    <DynamicTextarea
-      value={content}
-      onChange={(e) => handleUpdate(e.target.value || "")}
-      disabled={!isDraftState || !participantOwnsCard}
-      obfuscate={isDraftState && !participantOwnsCard}
-    />
+    <>
+      {participantOwnsCard && (
+        <DynamicTextarea
+          value={content}
+          onChange={(e) => handleUpdate(e.target.value || "")}
+          disabled={!isDraftState || !participantOwnsCard}
+        />
+      )}
+      {!participantOwnsCard && (
+        <div className="w-full max-w-md font-medium text-sm text-wrap bg-primary/10 hover:bg-primary/20 rounded-lg px-3 py-2 border border-secondary">
+          <div className="size-full blur-sm text-wrap break-words select-none">
+            {content}
+          </div>
+        </div>
+      )}
+    </>
   );
 }
