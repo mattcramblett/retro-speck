@@ -8,7 +8,8 @@ import { cookies } from "next/headers";
 
 export async function getCard(cardId: number): Promise<Card> {
   await assertAccessToCard(cardId);
-  return await findCard(cardId);
+  const user = await getUserOrThrow();
+  return await findCard(cardId, user.id);
 }
 
 export async function getCards(retroId: number): Promise<Card[]> {

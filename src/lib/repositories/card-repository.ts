@@ -5,47 +5,67 @@ import {
   participantsInRetroSpeck as participantTable,
   retrosInRetroSpeck as retroTable,
 } from "@/db/schema";
-import { Card, getPhase } from "@/types/model";
+import { Card, getPhase, Retro } from "@/types/model";
 import { and, desc, eq } from "drizzle-orm";
 import { obfuscate } from "../utils";
 import { getCurrentParticipant } from "./participant-repository";
 
-export async function getCard(cardId: number): Promise<Card> {
+export async function getCard(cardId: number, userId: string): Promise<Card> {
   const result = await db
     .select()
     .from(cardTable)
+    .fullJoin(columnTable, eq(columnTable.id, cardTable.retroColumnId))
+    .fullJoin(retroTable, eq(retroTable.id, columnTable.retroId))
     .where(eq(cardTable.id, cardId))
     .limit(1);
   if (!result.length) throw "Not found";
-  return result[0] as Card;
+  const row = result[0] as { retros: Retro; cards: Card };
+
+  const retro = row.retros as Retro;
+  const isDraftState = getPhase(retro.phase).isDraftState;
+  const currentParticipant = await getCurrentParticipant(retro.id, userId);
+
+  const card = row.cards as Card;
+  if (isDraftState && currentParticipant.id !== card.participantId) {
+    return {
+      ...card,
+      content: obfuscate(card.content),
+    };
+  }
+  return card;
 }
 
-export async function getCards(retroId: number, userId: string): Promise<Card[]> {
+export async function getCards(
+  retroId: number,
+  userId: string,
+): Promise<Card[]> {
   const retro = await db
     .select()
     .from(retroTable)
     .where(eq(retroTable.id, retroId))
     .limit(1);
   const isDraftState = getPhase(retro[0]?.phase).isDraftState;
-  const results = await db
+  const results = (await db
     .select()
     .from(cardTable)
     .fullJoin(columnTable, eq(columnTable.id, cardTable.retroColumnId))
     .where(eq(columnTable.retroId, retroId))
-    .orderBy(desc(cardTable.createdAt));
+    .orderBy(desc(cardTable.createdAt))) as { cards: Card }[];
 
   const currentParticipant = await getCurrentParticipant(retroId, userId);
 
   // Obfuscate the card content if needed
-  return results.map((it) => {
-    const card = it.cards; // card from the join
-    if (!card) return card;
+  return results
+    .map((it) => {
+      const card = it.cards; // card from the join
+      if (!card) return card;
 
-    if (isDraftState && card?.participantId !== currentParticipant.id) {
-      return { ...card, content: obfuscate(card.content) };
-    }
-    return card;
-  }).filter((it) => !!it);
+      if (isDraftState && card?.participantId !== currentParticipant.id) {
+        return { ...card, content: obfuscate(card.content) };
+      }
+      return card;
+    })
+    .filter((it) => !!it);
 }
 
 export async function createCard(
