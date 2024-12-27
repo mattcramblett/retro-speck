@@ -8,7 +8,6 @@ import { getColumns } from "@/lib/repositories/column-repository";
 import { getCards } from "@/lib/repositories/card-repository";
 import { getUserOrThrow } from "@/lib/server-actions/authN-actions";
 import { RetroBoard } from "@/components/retro/retro-board";
-import { ConnectionStatus } from "@/components/retro/connection/connection-status";
 
 const WaitingRoom = () => (
   <h1 className="font-black text-2xl">
@@ -41,7 +40,6 @@ export default async function RetroBoardPage({
 
   return (
     <main className="size-full flex overflow-y-hidden justify-center">
-      <ConnectionStatus retroPublicId={retro.publicId} />
       <RetroBoard
         initialRetro={retro}
         initialColumns={columns}

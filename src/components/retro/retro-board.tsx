@@ -3,6 +3,7 @@
 import { Card, Column, getPhase, Participant, Retro } from "@/types/model";
 import { ColumnBoard } from "@/components/retro/board-layout/column-board";
 import { useRetro } from "@/hooks/retros/use-retro";
+import { ConnectionStatus } from "./connection/connection-status";
 
 export function RetroBoard({
   initialRetro,
@@ -20,14 +21,20 @@ export function RetroBoard({
   const phase = getPhase(retro?.phase);
 
   return (
-    <div className="flex h-full p-4 gap-4 max-h-full overflow-x-auto tiny-scrollbar overscroll-x-none">
-      {phase.columnLayout && (
-        <ColumnBoard
-          initialRetro={initialRetro}
-          initialColumns={initialColumns}
-          initialCards={initialCards}
-        />
-      )}
-    </div>
+    <>
+      <ConnectionStatus
+        retroId={retroId}
+        retroPublicId={initialRetro.publicId}
+      />
+      <div className="flex h-full p-4 gap-4 max-h-full overflow-x-auto tiny-scrollbar overscroll-x-none">
+        {phase.columnLayout && (
+          <ColumnBoard
+            initialRetro={initialRetro}
+            initialColumns={initialColumns}
+            initialCards={initialCards}
+          />
+        )}
+      </div>
+    </>
   );
 }

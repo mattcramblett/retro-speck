@@ -52,7 +52,7 @@ export const useRetroCards = ({ retroId, initialData }: CardsDeps) => {
       ...(prev || []),
     ]);
 
-  const handleRefreshCard = async (data: Card) => {
+  const handleRefreshCard = (data: Card) => {
     queryClient.setQueryData(queryOpts.queryKey, (prev: Card[] | undefined) => {
       console.log("prev", prev);
       if (prev === undefined) return prev;
