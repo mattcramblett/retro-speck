@@ -1,8 +1,9 @@
 "use client";
 import { useRef } from "react";
 import { makeBroadcastClient } from "@/clients/broadcast-client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRetroCards } from "@/hooks/cards/use-retro-cards";
+import { retroQuery } from "./retros/use-retro";
 
 export function useRealtime({
   retroPublicId,
@@ -15,6 +16,7 @@ export function useRealtime({
   const { mutate: refreshCard } = useRefreshCard();
 
   const client = useRef(makeBroadcastClient());
+  const queryClient = useQueryClient();
 
   return useQuery({
     queryKey: ["realtime", retroPublicId],
@@ -32,9 +34,16 @@ export function useRealtime({
 
           refreshCard(cardId);
         })
+        .on("broadcast", { event: "retroPhaseUpdated" }, async () => {
+          console.log("\n\nReloading...\n\n", retroId);
+          queryClient.invalidateQueries({
+            queryKey: retroQuery(retroId).queryKey,
+          });
+        })
         .subscribe();
       console.log("Connected to the retro board.");
       return channel;
     },
   });
+  // TODO: unsubsribe from the channel
 }

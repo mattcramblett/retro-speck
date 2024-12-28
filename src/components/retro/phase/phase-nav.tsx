@@ -1,7 +1,7 @@
 "use client";
 
 import { Title } from "@/components/brand/title";
-import { useRetro } from "@/hooks/retros/use-retro";
+import { useAdvancePhase, useRetro } from "@/hooks/retros/use-retro";
 import { getPhase } from "@/types/model";
 import {
   Tooltip,
@@ -12,10 +12,22 @@ import {
 import { ArrowRight, Info } from "lucide-react";
 import { useParticipants } from "@/hooks/participants/use-participants";
 import { Button } from "@/components/ui/button";
+import { useToast } from "@/hooks/use-toast";
 
 export function PhaseNav({ retroId }: { retroId: number }) {
   const { data: retro } = useRetro(retroId);
   const phase = getPhase(retro?.phase);
+
+  const { mutate, isPending, isError } = useAdvancePhase(retroId);
+  const { toast } = useToast();
+  if (isError) {
+    toast({
+      variant: "destructive",
+      title: "Could not update the retro",
+      description:
+        "There was a problem updating the retro. Please refresh the page and try again.",
+    });
+  }
 
   const { useCurrentParticipant } = useParticipants({ retroId });
   const { data: participant } = useCurrentParticipant();
@@ -40,7 +52,12 @@ export function PhaseNav({ retroId }: { retroId: number }) {
         </Tooltip>
       </TooltipProvider>
       {isFacilitator && (
-        <Button variant="link" className="px-1">
+        <Button
+          variant="link"
+          className="px-1"
+          disabled={isPending}
+          onClick={() => mutate()}
+        >
           <ArrowRight className="text-secondary" />
         </Button>
       )}

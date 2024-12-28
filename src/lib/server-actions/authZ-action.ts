@@ -10,7 +10,7 @@ import {
 import { and, eq } from "drizzle-orm";
 
 // If the user is not an accepted participant, throw an exception.
-export async function assertAccess(retroId: number) {
+export async function assertAccess(retroId: number, requireFacilitator: boolean = false) {
   // User must be logged in.
   const user = await getUserOrThrow();
 
@@ -24,6 +24,7 @@ export async function assertAccess(retroId: number) {
         eq(retroTable.id, retroId),
         eq(participantTable.isAccepted, true),
         eq(participantTable.userId, user.id),
+        requireFacilitator ? eq(retroTable.facilitatorUserId, user.id) : undefined,
       ),
     );
   if (!results.length) throw "Not Found";

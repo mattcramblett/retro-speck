@@ -19,6 +19,21 @@ export async function getRetro(retroId: number): Promise<Retro> {
   return retro as Retro;
 }
 
+export async function updateRetro(retro: Partial<Retro>): Promise<Retro> {
+  const results = await db
+    .update(retroTable)
+    .set({
+      ...retro,
+      createdAt: undefined,
+      updatedAt: new Date(Date.now()).toISOString(),
+    })
+    .where(eq(retroTable.id, retro.id))
+    .returning();
+  const result = results[0];
+  if (!result) throw "Not found";
+  return result as Retro;
+}
+
 export async function getRetroByPublicId(publicId: string): Promise<Retro> {
   const results = await db
     .select()

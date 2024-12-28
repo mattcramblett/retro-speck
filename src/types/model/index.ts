@@ -72,3 +72,14 @@ export const getPhase = (phaseName?: string) => {
   return phases[phaseName as PhaseName || "setup"] || phases.setup;
 }
 
+export const getPhaseByIndex = (index: number) => {
+  const phaseList = Object.values(phases);
+  if (index >= phaseList.length) {
+    return phaseList[phaseList.length - 1];
+  } else if (index < 0){
+    return phaseList[0];
+  }
+
+  return phaseList.find(p => p.index === index);
+}
+
