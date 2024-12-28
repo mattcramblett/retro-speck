@@ -45,5 +45,4 @@ export function useRealtime({
       return channel;
     },
   });
-  // TODO: unsubsribe from the channel
 }

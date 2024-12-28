@@ -5,8 +5,17 @@ import { useState, useEffect, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 export function ConnectionStatus({ retroId, retroPublicId }: { retroId: number, retroPublicId: string }) {
-  const { isSuccess, isPending, isError } = useRealtime({ retroId, retroPublicId });
+  const { isSuccess, isPending, isError, data: channel } = useRealtime({ retroId, retroPublicId });
   const [showFull, setShowFull] = useState(true); // Show wider pill, vs show just the icon
+
+  useEffect(() => {
+    return () => {
+      // Cleanup and unsubscribe from the realtime channel
+      if (isSuccess) {
+        channel?.unsubscribe();
+      }
+    }
+  }, [channel, isSuccess]);
 
   useEffect(() => {
     const timeout = setTimeout(() => setShowFull(false), 2000);
