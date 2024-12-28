@@ -5,6 +5,7 @@ import { assertAccess, assertAccessToCard } from "./authZ-action";
 import { getUserOrThrow } from "./authN-actions";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
+import { EVENT } from "@/types/event";
 
 export async function getCard(cardId: number): Promise<Card> {
   await assertAccessToCard(cardId);
@@ -33,7 +34,7 @@ export async function updateCard(card: Partial<Card>): Promise<Card> {
   const supabase = createServerComponentClient({ cookies })
   await supabase.channel(retroPublicId).send({
     type: 'broadcast',
-    event: 'cardUpdated',
+    event: EVENT.cardUpdated,
     payload: { cardId: card.id },
   });
   return updatedCard;

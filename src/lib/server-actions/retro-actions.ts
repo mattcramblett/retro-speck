@@ -9,6 +9,7 @@ import { assertAccess } from "./authZ-action";
 import { getUserOrThrow } from "./authN-actions";
 import { createServerActionClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
+import { EVENT } from "@/types/event";
 
 export async function getRetro(retroId: number): Promise<Retro> {
   const retro = await queryRetro(retroId);
@@ -34,10 +35,10 @@ export async function advancePhase(retroId: number): Promise<Retro> {
   const updatedRetro = await updateRetro({ ...retro, phase: newPhase?.name });
 
   // send message notifying of the update
-  const supabase = createServerActionClient({ cookies })
+  const supabase = createServerActionClient({ cookies });
   await supabase.channel(retro.publicId).send({
-    type: 'broadcast',
-    event: 'retroPhaseUpdated',
+    type: "broadcast",
+    event: EVENT.retroPhaseUpdated,
     payload: { retroPublicId: retro.publicId },
   });
   return updatedRetro;

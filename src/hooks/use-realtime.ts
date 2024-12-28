@@ -4,6 +4,7 @@ import { makeBroadcastClient } from "@/clients/broadcast-client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRetroCards } from "@/hooks/cards/use-retro-cards";
 import { retroQuery } from "./retros/use-retro";
+import { EVENT } from "@/types/event";
 
 export function useRealtime({
   retroPublicId,
@@ -28,14 +29,13 @@ export function useRealtime({
         },
       });
       channel
-        .on("broadcast", { event: "cardUpdated" }, async (event) => {
+        .on("broadcast", { event: EVENT.cardUpdated }, async (event) => {
           const cardId = event.payload?.cardId;
           if (!cardId) return;
 
           refreshCard(cardId);
         })
-        .on("broadcast", { event: "retroPhaseUpdated" }, async () => {
-          console.log("\n\nReloading...\n\n", retroId);
+        .on("broadcast", { event: EVENT.cardUpdated }, async () => {
           queryClient.invalidateQueries({
             queryKey: retroQuery(retroId).queryKey,
           });
