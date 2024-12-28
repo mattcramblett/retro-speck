@@ -35,7 +35,7 @@ export function useRealtime({
 
           refreshCard(cardId);
         })
-        .on("broadcast", { event: EVENT.cardUpdated }, async () => {
+        .on("broadcast", { event: EVENT.retroPhaseUpdated }, async () => {
           queryClient.invalidateQueries({
             queryKey: retroQuery(retroId).queryKey,
           });
