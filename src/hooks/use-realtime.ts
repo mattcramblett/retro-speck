@@ -5,13 +5,16 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRetroCards } from "@/hooks/cards/use-retro-cards";
 import { retroQuery } from "./retros/use-retro";
 import { EVENT } from "@/types/event";
+import { PhaseName } from "@/types/model";
 
 export function useRealtime({
   retroPublicId,
   retroId,
+  onNewPhase,
 }: {
   retroPublicId: string;
   retroId: number;
+  onNewPhase?: (phase: PhaseName) => void;
 }) {
   const { useRefreshCard } = useRetroCards({ retroId });
   const { mutate: refreshCard } = useRefreshCard();
@@ -35,10 +38,13 @@ export function useRealtime({
 
           refreshCard(cardId);
         })
-        .on("broadcast", { event: EVENT.retroPhaseUpdated }, async () => {
+        .on("broadcast", { event: EVENT.retroPhaseUpdated }, async (event) => {
           queryClient.invalidateQueries({
             queryKey: retroQuery(retroId).queryKey,
           });
+          const phase = event.payload?.phase;
+          if (!phase) return;
+          if (onNewPhase) onNewPhase(phase);
         })
         .subscribe();
       console.log("Connected to the retro board.");

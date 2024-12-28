@@ -39,7 +39,7 @@ export async function advancePhase(retroId: number): Promise<Retro> {
   await supabase.channel(retro.publicId).send({
     type: "broadcast",
     event: EVENT.retroPhaseUpdated,
-    payload: { retroPublicId: retro.publicId },
+    payload: { phase: newPhase?.name },
   });
   return updatedRetro;
 }
