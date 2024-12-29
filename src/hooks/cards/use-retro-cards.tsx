@@ -93,7 +93,7 @@ export const useRetroCards = ({ retroId, initialData }: CardsDeps) => {
   const useUpdateCard = (cardId: number) => {
     return useMutation({
       mutationKey: ["cards", cardId, "update"],
-      mutationFn: async (card: Card) => debouncedUpdate.current(card),
+      mutationFn: async (card: Partial<Card>) => debouncedUpdate.current(card),
     });
   };
 

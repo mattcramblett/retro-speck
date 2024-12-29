@@ -8,6 +8,7 @@ import { RetroColumn } from "@/components/retro/retro-column";
 import { CreateCardButton } from "@/components/retro/create-card-button";
 import { useTopics } from "@/hooks/topics/use-topics";
 import { RetroTopic } from "../topic/retro-topic";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export function ColumnBoard({
   initialRetro,
@@ -30,7 +31,7 @@ export function ColumnBoard({
   const { mutate: createCard, isPending: isCreateCardPending } =
     useCreateCard();
 
-  const { data: topics } = useTopics(retroId, {
+  const { data: topics, isPending: isPendingTopics } = useTopics(retroId, {
     enabled: phase.name === "grouping",
   });
 
@@ -58,6 +59,9 @@ export function ColumnBoard({
                   />
                 );
               })}
+          {phase.name === "grouping" && isPendingTopics && (
+            <Skeleton className="w-full h-96 rounded-lg" />
+          )}
           {phase.name === "grouping" &&
             topics
               ?.filter((t) => t.retroColumnId === column.id)
