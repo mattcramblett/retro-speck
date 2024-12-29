@@ -6,7 +6,7 @@ import { useRetroCards } from "@/hooks/cards/use-retro-cards";
 import { useRetro } from "@/hooks/retros/use-retro";
 import { RetroColumn } from "@/components/retro/retro-column";
 import { CreateCardButton } from "@/components/retro/create-card-button";
-import { RetroCardGrouped } from "@/components/retro/card/retro-card-grouped";
+import { useTopics } from "@/hooks/topics/use-topics";
 
 export function ColumnBoard({
   initialRetro,
@@ -29,6 +29,10 @@ export function ColumnBoard({
   const { mutate: createCard, isPending: isCreateCardPending } =
     useCreateCard();
 
+  const { data: topics } = useTopics(retroId, {
+    enabled: phase.name === "grouping",
+  });
+
   return (
     <div className="flex h-full p-4 gap-4 max-h-full overflow-x-auto tiny-scrollbar overscroll-x-none">
       {initialColumns.map((column) => (
@@ -39,11 +43,11 @@ export function ColumnBoard({
               disabled={isCreateCardPending}
             />
           )}
-          {cards
-            ?.filter((c) => c.retroColumnId === column.id)
-            .sort((a, b) => b.id - a.id) // sort for consistency
-            .map((card) => {
-              if (phase.isDraftState) {
+          {phase.isDraftState &&
+            cards
+              ?.filter((c) => c.retroColumnId === column.id)
+              .sort((a, b) => b.id - a.id) // sort for consistency
+              .map((card) => {
                 return (
                   <RetroCardDraft
                     key={card.id}
@@ -52,16 +56,16 @@ export function ColumnBoard({
                     isDraftState={phase.isDraftState}
                   />
                 );
-              }
-              return (
-                <RetroCardGrouped
-                  key={card.id}
-                  retroId={retroId}
-                  initialCard={card}
-                  isDraftState={phase.isDraftState}
-                />
-              );
-            })}
+              })}
+          {phase.name === "grouping" &&
+            topics
+              ?.filter((t) => t.retroColumnId === column.id)
+              .sort((a, b) => b.id - a.id)
+              .map((topic) => (
+                <div key={topic.id}>
+                  {topic.id},{topic.name}
+                </div>
+              ))}
         </RetroColumn>
       ))}
     </div>

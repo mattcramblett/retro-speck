@@ -1,20 +1,34 @@
-import { cardsInRetroSpeck, participantsInRetroSpeck, retroColumnsInRetroSpeck, retrosInRetroSpeck, votesInRetroSpeck } from "@/db/schema";
+import {
+  cardsInRetroSpeck,
+  participantsInRetroSpeck,
+  retroColumnsInRetroSpeck,
+  retrosInRetroSpeck,
+  topicsInRetroSpeck,
+  votesInRetroSpeck,
+} from "@/db/schema";
 
 export type Retro = typeof retrosInRetroSpeck.$inferSelect;
 export type Participant = typeof participantsInRetroSpeck.$inferSelect;
 export type Column = typeof retroColumnsInRetroSpeck.$inferSelect;
 export type Card = typeof cardsInRetroSpeck.$inferSelect;
+export type Topic = typeof topicsInRetroSpeck.$inferSelect;
 export type Vote = typeof votesInRetroSpeck.$inferSelect;
 
-export type PhaseName = "setup" | "brainstorm" | "grouping" | "voting" | "discussion" | "complete";
+export type PhaseName =
+  | "setup"
+  | "brainstorm"
+  | "grouping"
+  | "voting"
+  | "discussion"
+  | "complete";
 
 export type Phase = {
-  name: PhaseName,
-  label: string,
-  index: number,
-  description: string,
-  isDraftState: boolean,
-  columnLayout: boolean,
+  name: PhaseName;
+  label: string;
+  index: number;
+  description: string;
+  isDraftState: boolean;
+  columnLayout: boolean;
 };
 
 export const phases: Record<PhaseName, Phase> = {
@@ -66,20 +80,19 @@ export const phases: Record<PhaseName, Phase> = {
     isDraftState: false,
     columnLayout: false,
   },
-}
+};
 
 export const getPhase = (phaseName?: string) => {
-  return phases[phaseName as PhaseName || "setup"] || phases.setup;
-}
+  return phases[(phaseName as PhaseName) || "setup"] || phases.setup;
+};
 
 export const getPhaseByIndex = (index: number) => {
   const phaseList = Object.values(phases);
   if (index >= phaseList.length) {
     return phaseList[phaseList.length - 1];
-  } else if (index < 0){
+  } else if (index < 0) {
     return phaseList[0];
   }
 
-  return phaseList.find(p => p.index === index);
-}
-
+  return phaseList.find((p) => p.index === index);
+};
