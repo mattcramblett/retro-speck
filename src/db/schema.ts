@@ -4,33 +4,18 @@ import { sql } from "drizzle-orm"
 export const retroSpeck = pgSchema("retro_speck");
 
 
-export const cardsInRetroSpeck = retroSpeck.table("cards", {
-	id: integer().primaryKey().generatedByDefaultAsIdentity({ name: "retro_speck.cards_id_seq", startWith: 1, increment: 1, minValue: 1, maxValue: 2147483647, cache: 1 }),
-	content: varchar().notNull(),
-	participantId: integer("participant_id").notNull(),
+export const topicsInRetroSpeck = retroSpeck.table("topics", {
+	id: integer().primaryKey().generatedByDefaultAsIdentity({ name: "retro_speck.topics_id_seq", startWith: 1, increment: 1, minValue: 1, maxValue: 2147483647, cache: 1 }),
+	name: varchar().notNull(),
 	retroColumnId: integer("retro_column_id").notNull(),
-	parentCardId: integer("parent_card_id"),
-	groupName: varchar("group_name"),
 	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(),
 	updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow().notNull(),
 }, (table) => [
-	index("idx_cards_parent_card_id").using("btree", table.parentCardId.asc().nullsLast().op("int4_ops")),
-	index("idx_cards_participant_id").using("btree", table.participantId.asc().nullsLast().op("int4_ops")),
-	index("idx_cards_retro_column_id").using("btree", table.retroColumnId.asc().nullsLast().op("int4_ops")),
-	foreignKey({
-			columns: [table.participantId],
-			foreignColumns: [participantsInRetroSpeck.id],
-			name: "cards_participant_id_fkey"
-		}),
-	foreignKey({
-			columns: [table.parentCardId],
-			foreignColumns: [table.id],
-			name: "cards_parent_card_id_fkey"
-		}),
+	index("idx_topics_retro_column_id").using("btree", table.retroColumnId.asc().nullsLast().op("int4_ops")),
 	foreignKey({
 			columns: [table.retroColumnId],
 			foreignColumns: [retroColumnsInRetroSpeck.id],
-			name: "cards_retro_column_id_fkey"
+			name: "topics_retro_column_id_fkey"
 		}),
 ]);
 
@@ -41,18 +26,18 @@ export const retrosInRetroSpeck = retroSpeck.table("retros", {
 	phase: varchar().notNull(),
 	creatingUserId: uuid("creating_user_id").notNull(),
 	facilitatorUserId: uuid("facilitator_user_id").notNull(),
-	currentCardId: integer("current_card_id"),
+	currentTopicId: integer("current_topic_id"),
 	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(),
 }, (table) => [
 	index("idx_retros_creating_user_id").using("btree", table.creatingUserId.asc().nullsLast().op("uuid_ops")),
-	index("idx_retros_current_card_id").using("btree", table.currentCardId.asc().nullsLast().op("int4_ops")),
+	index("idx_retros_current_topic_id").using("btree", table.currentTopicId.asc().nullsLast().op("int4_ops")),
 	index("idx_retros_facilitator_user_id").using("btree", table.facilitatorUserId.asc().nullsLast().op("uuid_ops")),
 	index("idx_retros_public_id").using("btree", table.publicId.asc().nullsLast().op("uuid_ops")),
 	index("idx_retros_retro_phase").using("btree", table.phase.asc().nullsLast().op("text_ops")),
 	foreignKey({
-			columns: [table.currentCardId],
-			foreignColumns: [cardsInRetroSpeck.id],
-			name: "retros_current_card_id_fkey"
+			columns: [table.currentTopicId],
+			foreignColumns: [topicsInRetroSpeck.id],
+			name: "retros_current_topic_id_fkey"
 		}),
 ]);
 
@@ -87,6 +72,35 @@ export const participantsInRetroSpeck = retroSpeck.table("participants", {
 			columns: [table.retroId],
 			foreignColumns: [retrosInRetroSpeck.id],
 			name: "participants_retro_id_fkey"
+		}),
+]);
+
+export const cardsInRetroSpeck = retroSpeck.table("cards", {
+	id: integer().primaryKey().generatedByDefaultAsIdentity({ name: "retro_speck.cards_id_seq", startWith: 1, increment: 1, minValue: 1, maxValue: 2147483647, cache: 1 }),
+	content: varchar().notNull(),
+	participantId: integer("participant_id").notNull(),
+	retroColumnId: integer("retro_column_id").notNull(),
+	topicId: integer("topic_id"),
+	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(),
+	updatedAt: timestamp("updated_at", { mode: 'string' }).defaultNow().notNull(),
+}, (table) => [
+	index("idx_cards_participant_id").using("btree", table.participantId.asc().nullsLast().op("int4_ops")),
+	index("idx_cards_retro_column_id").using("btree", table.retroColumnId.asc().nullsLast().op("int4_ops")),
+	index("idx_cards_topic_id").using("btree", table.topicId.asc().nullsLast().op("int4_ops")),
+	foreignKey({
+			columns: [table.participantId],
+			foreignColumns: [participantsInRetroSpeck.id],
+			name: "cards_participant_id_fkey"
+		}),
+	foreignKey({
+			columns: [table.topicId],
+			foreignColumns: [topicsInRetroSpeck.id],
+			name: "cards_topic_id_fkey"
+		}),
+	foreignKey({
+			columns: [table.retroColumnId],
+			foreignColumns: [retroColumnsInRetroSpeck.id],
+			name: "cards_retro_column_id_fkey"
 		}),
 ]);
 
