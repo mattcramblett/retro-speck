@@ -17,3 +17,14 @@ export const useTopics = (
     ...options,
   });
 };
+
+export const useTopic = (
+  retroId: number,
+  topicId: number,
+) => {
+  return useQuery({
+    ...topicsQuery(retroId),
+    select: (topics) => topics.find(t => t.id === topicId),
+  })
+};
+

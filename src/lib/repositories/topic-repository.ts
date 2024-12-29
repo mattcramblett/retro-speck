@@ -8,9 +8,10 @@ import { Topic } from "@/types/model";
 import { eq } from "drizzle-orm";
 
 export async function getTopics(retroId: number): Promise<Topic[]> {
-  return await db
+  const rows = (await db
     .select()
     .from(topicTable)
     .fullJoin(columnTable, eq(columnTable.id, topicTable.retroColumnId))
-    .where(eq(columnTable.retroId, retroId)) as Topic[];
+    .where(eq(columnTable.retroId, retroId))) as { topics: Topic[] }[];
+  return rows.map((it) => it.topics) as Topic[];
 }

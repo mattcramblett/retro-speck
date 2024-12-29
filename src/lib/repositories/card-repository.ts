@@ -90,7 +90,6 @@ export async function createCard(
     .insert(cardTable)
     .values({
       content: "",
-      retroColumnId: columnId,
       participantId,
     })
     .returning();
@@ -111,7 +110,7 @@ export async function updateCard(card: Partial<Card>): Promise<Card> {
   const result = await db
     .update(cardTable)
     .set({ ...forUpdate })
-    .where(eq(cardTable.id, card.id))
+    .where(eq(cardTable.id, card.id || 0))
     .returning();
 
   const updatedCard = result[0];

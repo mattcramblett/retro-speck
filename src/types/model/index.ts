@@ -6,6 +6,7 @@ import {
   topicsInRetroSpeck,
   votesInRetroSpeck,
 } from "@/db/schema";
+import { handleGroupingPhase } from "@/lib/services/phase-state-service";
 
 export type Retro = typeof retrosInRetroSpeck.$inferSelect;
 export type Participant = typeof participantsInRetroSpeck.$inferSelect;
@@ -29,6 +30,7 @@ export type Phase = {
   description: string;
   isDraftState: boolean;
   columnLayout: boolean;
+  stateFunction?: (retroId: number) => Promise<void>;
 };
 
 export const phases: Record<PhaseName, Phase> = {
@@ -55,6 +57,7 @@ export const phases: Record<PhaseName, Phase> = {
     description: "Group similar cards together into topics.",
     isDraftState: false,
     columnLayout: true,
+    stateFunction: handleGroupingPhase,
   },
   voting: {
     name: "voting",

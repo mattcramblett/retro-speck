@@ -7,6 +7,7 @@ import { useRetro } from "@/hooks/retros/use-retro";
 import { RetroColumn } from "@/components/retro/retro-column";
 import { CreateCardButton } from "@/components/retro/create-card-button";
 import { useTopics } from "@/hooks/topics/use-topics";
+import { RetroTopic } from "../topic/retro-topic";
 
 export function ColumnBoard({
   initialRetro,
@@ -62,9 +63,11 @@ export function ColumnBoard({
               ?.filter((t) => t.retroColumnId === column.id)
               .sort((a, b) => b.id - a.id)
               .map((topic) => (
-                <div key={topic.id}>
-                  {topic.id},{topic.name}
-                </div>
+                <RetroTopic
+                  key={topic.id}
+                  retroId={retroId}
+                  topicId={topic.id}
+                />
               ))}
         </RetroColumn>
       ))}

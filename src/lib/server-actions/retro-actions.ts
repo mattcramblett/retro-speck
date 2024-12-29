@@ -32,7 +32,10 @@ export async function advancePhase(retroId: number): Promise<Retro> {
   const retro = await queryRetro(retroId);
   const phase = getPhase(retro.phase);
   const newPhase = getPhaseByIndex(phase.index + 1);
-  const updatedRetro = await updateRetro({ ...retro, phase: newPhase?.name });
+  if (!newPhase) throw `Invalid state - retro ${retroId}, no phase with index ${phase.index + 1}`;
+
+  const updatedRetro = await updateRetro({ id: retro.id, phase: newPhase?.name });
+  if (newPhase.stateFunction) await newPhase.stateFunction(retro.id);
 
   // send message notifying of the update
   const supabase = createServerActionClient({ cookies });
