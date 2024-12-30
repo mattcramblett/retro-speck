@@ -21,7 +21,7 @@ export function RetroTopic({
   });
 
   const multipleCards = (cards?.length || 0) > 1;
-  
+
   if (cards?.length === 0) {
     return null;
   }
@@ -37,14 +37,19 @@ export function RetroTopic({
           multipleCards ? "pl-2 border-l-2 border-primary rounded-lg" : null,
         )}
       >
-        {cards?.map((card) => (
-          <RetroCardGrouped
-            key={card.id}
-            retroId={retroId}
-            topicId={topicId}
-            cardId={card.id}
-          />
-        ))}
+        {cards
+          ?.sort(
+            (a, b) =>
+              new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime(),
+          )
+          .map((card) => (
+            <RetroCardGrouped
+              key={card.id}
+              retroId={retroId}
+              topicId={topicId}
+              cardId={card.id}
+            />
+          ))}
       </div>
     </div>
   );

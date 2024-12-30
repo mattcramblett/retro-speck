@@ -68,14 +68,16 @@ export const useRetroCards = ({ retroId, initialData }: CardsDeps) => {
   };
 
   // Mutations
-  const useRefreshCard = (options?: UseMutationOptions<Card, Error, number>) =>{
+  const useRefreshCard = (
+    options?: UseMutationOptions<Card, Error, number>,
+  ) => {
     return useMutation({
       ...(options || {}),
       mutationKey: ["cards", "update"],
       mutationFn: (cardId: number) => getCard(cardId),
       onSuccess: handleRefreshCard,
     });
-  }
+  };
 
   const useCreateCard = (options?: UseMutationOptions<Card, Error, number>) => {
     return useMutation({
@@ -90,10 +92,14 @@ export const useRetroCards = ({ retroId, initialData }: CardsDeps) => {
     debounce(1000, async (c: Card) => await updateCard(c)),
   );
 
-  const useUpdateCard = (cardId: number) => {
+  const useUpdateCard = (
+    cardId: number,
+    opts?: { debounce?: boolean },
+  ) => {
     return useMutation({
       mutationKey: ["cards", cardId, "update"],
-      mutationFn: async (card: Partial<Card>) => debouncedUpdate.current(card),
+      mutationFn: async (card: Partial<Card>) =>
+        opts?.debounce ? debouncedUpdate.current(card) : await updateCard(card),
     });
   };
 

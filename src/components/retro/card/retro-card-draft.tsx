@@ -16,7 +16,9 @@ export function RetroCardDraft({
 }) {
   const { useUpdateCard, useCard } = useRetroCards({ retroId });
   const { data: card } = useCard(initialCard.id);
-  const { mutate: updateCard } = useUpdateCard(initialCard.id);
+  const { mutate: updateCard } = useUpdateCard(initialCard.id, {
+    debounce: true,
+  });
 
   const { useCurrentParticipant } = useParticipants({ retroId });
   const { data: participant } = useCurrentParticipant();
