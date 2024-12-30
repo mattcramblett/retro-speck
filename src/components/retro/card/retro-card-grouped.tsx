@@ -26,7 +26,7 @@ export function RetroCardGrouped({
 
   const handleUpdate = (cardId: number) => {
     if (!cardId) return;
-    updateCard({ id: cardId, topicId });
+    updateCard({ id: cardId, topicId }); // TODO: optimistic update
   };
 
   const handleDragStart = (e: DragEvent<HTMLDivElement>) => {
