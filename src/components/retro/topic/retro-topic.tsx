@@ -71,7 +71,9 @@ export function RetroTopic({
                 />
               );
             } else {
-              return <div key={card.id} className="h-2 bg-primary/10 rounded-b-lg" />;
+              return (
+                <div key={card.id} className="h-2 bg-primary/10 rounded-b-lg" />
+              );
             }
           })}
       </div>
