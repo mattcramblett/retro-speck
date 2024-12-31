@@ -8,11 +8,13 @@ import { getColumns } from "@/lib/repositories/column-repository";
 import { getCards } from "@/lib/repositories/card-repository";
 import { getUserOrThrow } from "@/lib/server-actions/authN-actions";
 import { RetroBoard } from "@/components/retro/retro-board";
+import { SplashScreen } from "@/components/brand/splash-screen";
+import { Title } from "@/components/brand/title";
 
 const WaitingRoom = () => (
-  <h1 className="font-black text-2xl">
-    Waiting for the facilitator to let you in
-  </h1>
+  <SplashScreen>
+    <Title className="text-secondary">Waiting for the facilitator to let you in!</Title>
+  </SplashScreen>
 );
 
 export default async function RetroBoardPage({
