@@ -5,7 +5,7 @@ import { useUser } from "@/hooks/auth/use-user";
 import { useParticipants } from "@/hooks/participants/use-participants";
 import { useRetro } from "@/hooks/retros/use-retro";
 import { Participant } from "@/types/model";
-import { ChevronLeft, PanelLeft } from "lucide-react";
+import { ChevronLeft, PanelLeft, UserRoundCheck, UserRoundX } from "lucide-react";
 import { useState } from "react";
 
 export function ParticipantPanel({
@@ -48,11 +48,28 @@ export function ParticipantPanel({
       <Separator className="mb-3" />
       <div className="size-full flex flex-col gap-2">
         {admitted.map((p) => (
-          <div className="text-sm flex gap-1" key={p.id}>
-            {p.name}
-            {p.userId === user?.id && (
-              <div className="text-muted-foreground">{"(you)"}</div>
+          <div className="flex items-center gap-2" key={p.id}>
+            {isFacilitator && (
+              <Button
+                variant="icon"
+                size="bare"
+                onClick={() => setIsExpanded(false)}
+                disabled={p.userId === retro?.facilitatorUserId}
+                title={`Reject ${p.name}`}
+              >
+                <UserRoundX className="text-muted-foreground" size={12} />
+              </Button>
             )}
+            <div className="text-sm flex gap-1">
+              {p.name}
+              {p.userId === user?.id && (
+                <div className="text-muted-foreground">{"(you)"}</div>
+              )}
+              {p.userId !== user?.id &&
+                p.userId === retro?.facilitatorUserId && (
+                  <div className="text-muted-foreground">{"(facilitator)"}</div>
+                )}
+            </div>
           </div>
         ))}
         {isFacilitator && notAdmitted.length > 0 && (
@@ -62,8 +79,20 @@ export function ParticipantPanel({
         )}
         {isFacilitator &&
           notAdmitted.map((p) => (
-            <div className="text-sm" key={p.id}>
-              {p.name}
+            <div className="flex items-center gap-2" key={p.id}>
+              {isFacilitator && (
+                <Button
+                  variant="icon"
+                  size="bare"
+                  onClick={() => setIsExpanded(false)}
+                  title={`Admit ${p.name}`}
+                >
+                  <UserRoundCheck className="text-muted-foreground" size={12} />
+                </Button>
+              )}
+              <div className="text-sm">
+                {p.name}
+              </div>
             </div>
           ))}
       </div>
