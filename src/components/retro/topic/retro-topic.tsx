@@ -5,9 +5,8 @@ import { useTopic } from "@/hooks/topics/use-topics";
 import { Card } from "@/types/model";
 import { RetroCardGrouped } from "../card/retro-card-grouped";
 import { cn } from "@/lib/utils";
-import { CircleChevronUp } from "lucide-react";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { TopicTitle } from "./topic-title";
 
 export function RetroTopic({
   retroId,
@@ -19,12 +18,11 @@ export function RetroTopic({
   const [isExpanded, setIsExpanded] = useState(true);
 
   const { data: topic } = useTopic(retroId, topicId);
-  const { useCards, useUpdateCard } = useRetroCards({ retroId });
+  const { useCards } = useRetroCards({ retroId });
   const { data: cards } = useCards({
     select: (allCards: Card[]) =>
       allCards.filter((c: Card) => c.topicId === topicId),
   });
-  const { mutate: updateCard } = useUpdateCard();
 
   const multipleCards = (cards?.length || 0) > 1;
 
@@ -34,20 +32,12 @@ export function RetroTopic({
 
   return (
     <div className="w-full" key={topicId}>
-      {multipleCards && (
-        <div className="flex items-center gap-2 pb-1">
-          <Button
-            variant="icon"
-            size="bare"
-            onClick={() => setIsExpanded((it) => !it)}
-          >
-            <CircleChevronUp
-              size={16}
-              className={cn("transition-all", isExpanded ? null : "rotate-180")}
-            />
-          </Button>
-          <div className="font-bold text-md">{topic?.name}</div>
-        </div>
+      {multipleCards && topic && (
+        <TopicTitle
+          topic={topic}
+          onToggleExpand={() => setIsExpanded(it => !it)}
+          isExpanded={isExpanded}
+        />
       )}
       <div
         className={cn(
@@ -69,7 +59,6 @@ export function RetroTopic({
                   retroId={retroId}
                   topicId={topicId}
                   cardId={card.id}
-                  onUpdateCard={updateCard}
                 />
               );
             } else {
