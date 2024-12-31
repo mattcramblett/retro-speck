@@ -90,6 +90,7 @@ export async function createCard(
     .insert(cardTable)
     .values({
       content: "",
+      retroColumnId: columnId,
       participantId,
     })
     .returning();

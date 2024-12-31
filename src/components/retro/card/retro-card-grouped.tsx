@@ -1,9 +1,11 @@
 "use client";
 import { useRetroCards } from "@/hooks/cards/use-retro-cards";
 import { useRetro } from "@/hooks/retros/use-retro";
+import { useColumn } from "@/hooks/columns/use-columns";
 import { cn } from "@/lib/utils";
 import { getPhase } from "@/types/model";
 import { useState, DragEvent } from "react";
+import { Badge } from "@/components/ui/badge";
 
 export function RetroCardGrouped({
   retroId,
@@ -11,12 +13,13 @@ export function RetroCardGrouped({
   cardId,
 }: {
   retroId: number;
-  topicId:number;
+  topicId: number;
   cardId: number;
 }) {
   const { useUpdateCard, useCard } = useRetroCards({ retroId });
   const { data: card } = useCard(cardId);
   const { mutate: updateCard } = useUpdateCard(cardId);
+  const { data: column } = useColumn(retroId, card?.retroColumnId || 0);
   const { data: retro } = useRetro(retroId);
   const phase = getPhase(retro?.phase);
   const draggable = phase.name === "grouping";
@@ -26,7 +29,7 @@ export function RetroCardGrouped({
 
   const handleUpdate = (cardId: number) => {
     if (!cardId) return;
-    updateCard({ id: cardId, topicId }); // TODO: optimistic update
+    updateCard({ id: cardId, topicId }); // TODO: optimistic update, this requires roundtrip
   };
 
   const handleDragStart = (e: DragEvent<HTMLDivElement>) => {
@@ -80,6 +83,9 @@ export function RetroCardGrouped({
         <p className="size-full text-wrap break-words select-none whitespace-pre-wrap">
           {card?.content}
         </p>
+        <div className="w-full flex justify-end">
+          <Badge>{column?.name}</Badge>
+        </div>
       </div>
     </>
   );

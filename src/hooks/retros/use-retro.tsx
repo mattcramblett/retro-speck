@@ -10,7 +10,7 @@ export const retroQuery = (retroId: number) =>
 
 export const useRetro = (
   retroId: number,
-  options?: Partial<typeof retroQuery>,
+  options?: Partial<ReturnType<typeof retroQuery>>,
 ) => {
   return useQuery({
     ...(options || {}),
