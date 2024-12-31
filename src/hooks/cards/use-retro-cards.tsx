@@ -52,6 +52,7 @@ export const useRetroCards = ({ retroId, initialData }: CardsDeps) => {
       ...(prev || []),
     ]);
 
+  // Take an updated Card and inject it into local query state (avoids refetching all cards)
   const handleRefreshCard = (data: Card) => {
     queryClient.setQueryData(queryOpts.queryKey, (prev: Card[] | undefined) => {
       if (prev === undefined) return prev;
@@ -64,6 +65,27 @@ export const useRetroCards = ({ retroId, initialData }: CardsDeps) => {
 
       const result = prev?.map((c) => (c.id === cardId ? data : c));
       return result;
+    });
+  };
+
+  // Take a Card's update variables and inject them into local query state to reduce lag with certain actions.
+  const handleOptimisticUpdate = (variables: Partial<Card>) => {
+    // Inject the update into state immediately
+    queryClient.setQueryData(queryOpts.queryKey, (prev: Card[] | undefined) => {
+      if (prev === undefined) return prev;
+      const { id } = variables;
+
+      const currentCard = prev?.find((c) => c.id === id);
+      const updatedAt = new Date();
+      // Artificially/temporarily set updatedAt later to force rendering order
+      updatedAt.setDate(updatedAt.getDate() + 1);
+      const data = {
+        ...(currentCard || {}),
+        ...variables,
+        updatedAt: updatedAt.toISOString(),
+      } as Card;
+
+      return prev?.map((c) => (c.id === id ? data : c));
     });
   };
 
@@ -100,31 +122,8 @@ export const useRetroCards = ({ retroId, initialData }: CardsDeps) => {
       mutationKey: ["cards", "update"],
       mutationFn: async (card: Partial<Card>) =>
         opts?.debounce ? debouncedUpdate.current(card) : await updateCard(card),
-      onMutate: (variables: Partial<Card>) => {
-        if (!opts?.optimistic) {
-          return;
-        }
-        // Inject the update into state immediately
-        queryClient.setQueryData(
-          queryOpts.queryKey,
-          (prev: Card[] | undefined) => {
-            if (prev === undefined) return prev;
-            const { id } = variables;
-
-            const currentCard = prev?.find((c) => c.id === id);
-            const updatedAt = new Date();
-            // Artificially/temporarily set updatedAt later to force rendering order
-            updatedAt.setDate(updatedAt.getDate() + 1);
-            const data = {
-              ...(currentCard || {}),
-              ...variables,
-              updatedAt: updatedAt.toISOString(),
-            } as Card;
-
-            return prev?.map((c) => (c.id === id ? data : c));
-          },
-        );
-      },
+      onMutate: (variables: Partial<Card>) =>
+        opts?.optimistic && handleOptimisticUpdate(variables),
     });
   };
 
