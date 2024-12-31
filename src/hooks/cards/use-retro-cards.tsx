@@ -112,10 +112,13 @@ export const useRetroCards = ({ retroId, initialData }: CardsDeps) => {
             const { id } = variables;
 
             const currentCard = prev?.find((c) => c.id === id);
+            const updatedAt = new Date();
+            // Artificially/temporarily set updatedAt later to force rendering order
+            updatedAt.setDate(updatedAt.getDate() + 1);
             const data = {
               ...(currentCard || {}),
               ...variables,
-              updatedAt: new Date().toISOString(),
+              updatedAt: updatedAt.toISOString(),
             } as Card;
 
             return prev?.map((c) => (c.id === id ? data : c));

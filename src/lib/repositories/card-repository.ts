@@ -6,7 +6,7 @@ import {
   retrosInRetroSpeck as retroTable,
 } from "@/db/schema";
 import { Card, getPhase, Retro } from "@/types/model";
-import { and, desc, eq } from "drizzle-orm";
+import { and, desc, eq, sql } from "drizzle-orm";
 import { obfuscate } from "../utils";
 import { getCurrentParticipant } from "./participant-repository";
 
@@ -106,7 +106,7 @@ export async function updateCard(card: Partial<Card>): Promise<Card> {
     participantId: undefined,
     retroColumnId: undefined,
     createdAt: undefined,
-    updatedAt: new Date(Date.now()).toISOString(),
+    updatedAt: sql`NOW()`,
   };
   const result = await db
     .update(cardTable)
