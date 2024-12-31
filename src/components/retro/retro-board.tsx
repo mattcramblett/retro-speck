@@ -7,6 +7,7 @@ import { ConnectionStatus } from "./connection/connection-status";
 import { PhaseNav } from "./phase/phase-nav";
 import { SequenceLayout } from "./board-layout/sequence-layout";
 import { SummaryLayout } from "./board-layout/summary-layout";
+import { ParticipantPanel } from "./participant/participant-panel";
 
 export function RetroBoard({
   initialRetro,
@@ -29,31 +30,37 @@ export function RetroBoard({
         retroId={retroId}
         retroPublicId={initialRetro.publicId}
       />
-      <div className="flex flex-col gap-2 size-full">
+      <div className="flex flex-col size-full">
         <PhaseNav retroId={retroId} />
-        {phase.layoutType === "column" && (
-          <ColumnLayout
-            initialRetro={initialRetro}
-            initialColumns={initialColumns}
-            initialCards={initialCards}
-          />
-        )}
-        {phase.layoutType === "sequence" && (
-          <SequenceLayout
-            initialRetro={initialRetro}
-            initialColumns={initialColumns}
-            initialCards={initialCards}
+        <div className="flex size-full">
+          <ParticipantPanel
+            retroId={retroId}
             initialParticipants={initialParticipants}
           />
-        )}
-        {phase.layoutType === "summary" && (
-          <SummaryLayout
-            initialRetro={initialRetro}
-            initialColumns={initialColumns}
-            initialCards={initialCards}
-            initialParticipants={initialParticipants}
-          />
-        )}
+          {phase.layoutType === "column" && (
+            <ColumnLayout
+              initialRetro={initialRetro}
+              initialColumns={initialColumns}
+              initialCards={initialCards}
+            />
+          )}
+          {phase.layoutType === "sequence" && (
+            <SequenceLayout
+              initialRetro={initialRetro}
+              initialColumns={initialColumns}
+              initialCards={initialCards}
+              initialParticipants={initialParticipants}
+            />
+          )}
+          {phase.layoutType === "summary" && (
+            <SummaryLayout
+              initialRetro={initialRetro}
+              initialColumns={initialColumns}
+              initialCards={initialCards}
+              initialParticipants={initialParticipants}
+            />
+          )}
+        </div>
       </div>
     </>
   );

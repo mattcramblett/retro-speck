@@ -10,7 +10,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ArrowRight, Info } from "lucide-react";
-import { useParticipants } from "@/hooks/participants/use-participants";
+import { useCurrentParticipant } from "@/hooks/participants/use-participants";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 
@@ -29,8 +29,7 @@ export function PhaseNav({ retroId }: { retroId: number }) {
     });
   }
 
-  const { useCurrentParticipant } = useParticipants({ retroId });
-  const { data: participant } = useCurrentParticipant();
+  const { data: participant } = useCurrentParticipant(retroId);
 
   const isFacilitator = participant?.userId === retro?.facilitatorUserId;
 
