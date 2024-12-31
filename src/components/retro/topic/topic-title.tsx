@@ -37,7 +37,7 @@ export function TopicTitle({
   };
 
   return (
-    <div className="flex items-center gap-2 pb-1">
+    <div className="flex items-center gap-2 pb-2">
       <Button variant="icon" size="bare" onClick={onToggleExpand}>
         <CircleChevronUp
           size={16}
@@ -46,7 +46,7 @@ export function TopicTitle({
       </Button>
       <InputBare
         value={topicTitle || ""}
-        className="font-bold text-md"
+        className="font-bold text-md h-fit"
         placeholder="Untitled topic"
         onChange={handleTitleChange}
       />
