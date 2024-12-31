@@ -16,6 +16,15 @@ export async function getTopics(retroId: number): Promise<Topic[]> {
   return rows.map((it) => it.topics) as Topic[];
 }
 
+export async function getTopic(topicId: number): Promise<Topic> {
+  const result = (await db
+    .select()
+    .from(topicTable)
+    .where(eq(topicTable.id, topicId))
+    .limit(1));
+  return result[0] as Topic;
+}
+
 export async function updateTopic(topic: Partial<Topic>): Promise<Topic> {
   const result = await db
     .update(topicTable)

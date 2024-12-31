@@ -1,7 +1,7 @@
 "use client";
-import { getTopics, updateTopic } from "@/lib/server-actions/topic-actions";
+import { getTopic, getTopics, updateTopic } from "@/lib/server-actions/topic-actions";
 import { Topic } from "@/types/model";
-import { queryOptions, useMutation, useQuery } from "@tanstack/react-query";
+import { queryOptions, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRef } from "react";
 import { debounce } from "throttle-debounce";
 
@@ -27,6 +27,26 @@ export const useTopic = (retroId: number, topicId: number) => {
     select: (topics) => topics.find((t) => t.id === topicId),
   });
 };
+
+export const useRefreshTopic = (retroId: number) => {
+  const queryClient = useQueryClient();
+  const queryOpts = topicsQuery(retroId);
+
+  const handleRefreshTopic = (data: Topic) => {
+    queryClient.setQueryData(queryOpts.queryKey, (prev: Topic[] | undefined) => {
+      if (prev === undefined) return prev;
+      const topicId = data.id;
+      const result = prev?.map((t) => (t.id === topicId ? data : t));
+      return result;
+    });
+  };
+
+  return useMutation({
+    mutationKey: ["topic", "refresh"],
+    mutationFn: (topicId: number) => getTopic(topicId),
+    onSuccess: handleRefreshTopic,
+  });
+}
 
 export const useUpdateTopic = (opts?: { debounce?: boolean }) => {
   const debouncedUpdate = useRef(

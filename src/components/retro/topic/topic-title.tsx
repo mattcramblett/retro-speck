@@ -5,7 +5,7 @@ import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { Topic } from "@/types/model";
 import { CircleChevronUp } from "lucide-react";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 
 export function TopicTitle({
   topic,
@@ -27,6 +27,8 @@ export function TopicTitle({
       description: "Please refresh the page and try again.",
     });
   }
+
+  useEffect(() => setTopicTitle(topic.name), [topic.name]);
 
   const handleTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const newTitle = e.target.value || "";

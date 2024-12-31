@@ -6,6 +6,7 @@ import {
   retroColumnsInRetroSpeck as columnTable,
   cardsInRetroSpeck as cardTable,
   retrosInRetroSpeck as retroTable,
+  topicsInRetroSpeck as topicTable,
 } from "@/db/schema";
 import { and, eq } from "drizzle-orm";
 
@@ -46,6 +47,28 @@ export async function assertAccessToCard(cardId: number) {
     .where(
       and(
         eq(cardTable.id, cardId),
+        eq(participantTable.isAccepted, true),
+        eq(participantTable.userId, user.id),
+      ),
+    );
+  if (!results.length) throw "Not Found";
+  return results[0].retros.publicId as string;
+}
+
+export async function assertAccessToTopic(topicId: number) {
+  // User must be logged in.
+  const user = await getUserOrThrow();
+  // Find the retro and participant based on the card.
+  // User must be an accepted participant to access data.
+  const results = await db
+    .select()
+    .from(participantTable)
+    .fullJoin(retroTable, eq(retroTable.id, participantTable.retroId))
+    .fullJoin(columnTable, eq(columnTable.retroId, retroTable.id))
+    .fullJoin(topicTable, eq(topicTable.retroColumnId, columnTable.id))
+    .where(
+      and(
+        eq(topicTable.id, topicId),
         eq(participantTable.isAccepted, true),
         eq(participantTable.userId, user.id),
       ),
