@@ -11,7 +11,7 @@ import { RetroTopic } from "../topic/retro-topic";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useColumns } from "@/hooks/columns/use-columns";
 
-export function ColumnBoard({
+export function ColumnLayout({
   initialRetro,
   initialColumns,
   initialCards,

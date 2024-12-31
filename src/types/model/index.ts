@@ -23,13 +23,18 @@ export type PhaseName =
   | "discussion"
   | "complete";
 
+export type LayoutType =
+  | "column"
+  | "sequence"
+  | "summary";
+
 export type Phase = {
   name: PhaseName;
   label: string;
   index: number;
   description: string;
   isDraftState: boolean;
-  columnLayout: boolean;
+  layoutType: LayoutType;
   stateFunction?: (retroId: number) => Promise<void>;
 };
 
@@ -40,7 +45,7 @@ export const phases: Record<PhaseName, Phase> = {
     index: 0,
     description: "Add and edit columns, then move onto brainstorming.",
     isDraftState: true,
-    columnLayout: true,
+    layoutType: "column",
   },
   brainstorm: {
     name: "brainstorm",
@@ -48,7 +53,7 @@ export const phases: Record<PhaseName, Phase> = {
     index: 1,
     description: "Add cards to the board with topics you'd like to discuss.",
     isDraftState: true,
-    columnLayout: true,
+    layoutType: "column",
   },
   grouping: {
     name: "grouping",
@@ -56,7 +61,7 @@ export const phases: Record<PhaseName, Phase> = {
     index: 2,
     description: "Group similar cards together into topics.",
     isDraftState: false,
-    columnLayout: true,
+    layoutType: "column",
     stateFunction: handleGroupingPhase,
   },
   voting: {
@@ -65,7 +70,7 @@ export const phases: Record<PhaseName, Phase> = {
     index: 3,
     description: "Vote on the topics you want to discuss.",
     isDraftState: false,
-    columnLayout: true,
+    layoutType: "column",
   },
   discussion: {
     name: "discussion",
@@ -73,7 +78,7 @@ export const phases: Record<PhaseName, Phase> = {
     index: 4,
     description: "Take time to discuss each topic.",
     isDraftState: false,
-    columnLayout: false,
+    layoutType: "sequence",
   },
   complete: {
     name: "complete",
@@ -81,7 +86,7 @@ export const phases: Record<PhaseName, Phase> = {
     index: 5,
     description: "The retrospective is complete!",
     isDraftState: false,
-    columnLayout: false,
+    layoutType: "summary",
   },
 };
 
