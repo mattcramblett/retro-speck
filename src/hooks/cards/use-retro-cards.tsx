@@ -92,13 +92,36 @@ export const useRetroCards = ({ retroId, initialData }: CardsDeps) => {
     debounce(1000, async (c: Card) => await updateCard(c)),
   );
 
-  const useUpdateCard = (
-    opts?: { debounce?: boolean },
-  ) => {
+  const useUpdateCard = (opts?: {
+    debounce?: boolean;
+    optimistic?: boolean;
+  }) => {
     return useMutation({
       mutationKey: ["cards", "update"],
       mutationFn: async (card: Partial<Card>) =>
         opts?.debounce ? debouncedUpdate.current(card) : await updateCard(card),
+      onMutate: (variables: Partial<Card>) => {
+        if (!opts?.optimistic) {
+          return;
+        }
+        // Inject the update into state immediately
+        queryClient.setQueryData(
+          queryOpts.queryKey,
+          (prev: Card[] | undefined) => {
+            if (prev === undefined) return prev;
+            const { id } = variables;
+
+            const currentCard = prev?.find((c) => c.id === id);
+            const data = {
+              ...(currentCard || {}),
+              ...variables,
+              updatedAt: new Date().toISOString(),
+            } as Card;
+
+            return prev?.map((c) => (c.id === id ? data : c));
+          },
+        );
+      },
     });
   };
 

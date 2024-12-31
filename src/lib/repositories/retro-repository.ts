@@ -25,7 +25,7 @@ export async function updateRetro(retro: Partial<Retro>): Promise<Retro> {
     .set({
       ...retro,
       createdAt: undefined,
-      updatedAt: new Date(Date.now()).toISOString(),
+      updatedAt: new Date().toISOString(),
     })
     .where(eq(retroTable.id, retro.id))
     .returning();

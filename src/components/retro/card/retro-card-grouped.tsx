@@ -17,7 +17,7 @@ export function RetroCardGrouped({
   cardId: number;
 }) {
   const { useCard, useUpdateCard } = useRetroCards({ retroId });
-  const { mutate: updateCard } = useUpdateCard();
+  const { mutate: updateCard } = useUpdateCard({ optimistic: true });
   const { data: card } = useCard(cardId);
   const { data: column } = useColumn(retroId, card?.retroColumnId || 0);
   const { data: retro } = useRetro(retroId);
