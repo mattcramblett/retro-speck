@@ -16,9 +16,9 @@ export function RetroCardGrouped({
   topicId: number;
   cardId: number;
 }) {
-  const { useUpdateCard, useCard } = useRetroCards({ retroId });
+  const { useCard, useUpdateCard } = useRetroCards({ retroId });
+  const { mutate: updateCard } = useUpdateCard();
   const { data: card } = useCard(cardId);
-  const { mutate: updateCard } = useUpdateCard(cardId);
   const { data: column } = useColumn(retroId, card?.retroColumnId || 0);
   const { data: retro } = useRetro(retroId);
   const phase = getPhase(retro?.phase);
@@ -29,7 +29,7 @@ export function RetroCardGrouped({
 
   const handleUpdate = (cardId: number) => {
     if (!cardId) return;
-    updateCard({ id: cardId, topicId }); // TODO: optimistic update, this requires roundtrip
+    updateCard({ id: cardId, topicId });
   };
 
   const handleDragStart = (e: DragEvent<HTMLDivElement>) => {

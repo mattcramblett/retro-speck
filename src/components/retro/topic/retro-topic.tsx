@@ -19,11 +19,12 @@ export function RetroTopic({
   const [isExpanded, setIsExpanded] = useState(true);
 
   const { data: topic } = useTopic(retroId, topicId);
-  const { useCards } = useRetroCards({ retroId });
+  const { useCards, useUpdateCard } = useRetroCards({ retroId });
   const { data: cards } = useCards({
     select: (allCards: Card[]) =>
       allCards.filter((c: Card) => c.topicId === topicId),
   });
+  const { mutate: updateCard } = useUpdateCard();
 
   const multipleCards = (cards?.length || 0) > 1;
 
@@ -68,6 +69,7 @@ export function RetroTopic({
                   retroId={retroId}
                   topicId={topicId}
                   cardId={card.id}
+                  onUpdateCard={updateCard}
                 />
               );
             } else {

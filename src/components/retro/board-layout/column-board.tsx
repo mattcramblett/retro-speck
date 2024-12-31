@@ -24,7 +24,9 @@ export function ColumnBoard({
   const { data: retro } = useRetro(retroId, { initialData: initialRetro });
   const phase = getPhase(retro?.phase);
 
-  const { data: columns } = useColumns(retroId, { initialData: initialColumns });
+  const { data: columns } = useColumns(retroId, {
+    initialData: initialColumns,
+  });
 
   const { useCards, useCreateCard } = useRetroCards({
     retroId,
@@ -41,7 +43,11 @@ export function ColumnBoard({
   return (
     <div className="flex h-full p-4 gap-4 max-h-full overflow-x-auto tiny-scrollbar overscroll-x-none">
       {columns?.map((column) => (
-        <RetroColumn key={column.id} name={column.name} showLabel={phase.isDraftState}>
+        <RetroColumn
+          key={column.id}
+          name={column.name}
+          showLabel={phase.isDraftState}
+        >
           {phase.name === "brainstorm" && (
             <CreateCardButton
               onClick={() => createCard(column.id)}
