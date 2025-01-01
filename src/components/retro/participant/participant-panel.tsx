@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useUser } from "@/hooks/auth/use-user";
@@ -41,10 +41,17 @@ export function ParticipantPanel({
 
   const handleAdmission = (id: number, isAccepted: boolean) => {
     updateParticipant({ id, isAccepted });
-  }
+  };
 
-  const admitted = participants?.filter((p) => p.isAccepted) || [];
-  const notAdmitted = participants?.filter((p) => !p.isAccepted) || [];
+  // Handle optimistic update with `variables`
+  const admitted =
+    participants?.filter(
+      (p) => p.isAccepted || (p.id === variables?.id && variables?.isAccepted),
+    ) || [];
+  const notAdmitted =
+    participants?.filter(
+      (p) => !p.isAccepted || (p.id === variables?.id && variables?.isAccepted),
+    ) || [];
 
   if (!isExpanded) {
     return (
