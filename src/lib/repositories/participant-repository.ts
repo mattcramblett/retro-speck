@@ -93,3 +93,14 @@ export async function updateParticipant(
 
   return result[0] as Participant;
 }
+
+export async function getParticipant(participantId: number): Promise<Participant> {
+  const results = await db
+    .select()
+    .from(participantTable)
+    .where(eq(participantTable.id, participantId));
+  const participant = results[0];
+  if (!participant) throw "Not found";
+
+  return participant;
+}

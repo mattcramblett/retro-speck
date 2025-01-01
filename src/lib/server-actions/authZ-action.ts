@@ -34,6 +34,7 @@ export async function assertAccess(
       ),
     );
   if (!results.length) throw "Not Found";
+  return results[0].retros.publicId as string;
 }
 
 // If user does not have access, throw error. If they do, return the retro publicId
@@ -82,7 +83,10 @@ export async function assertAccessToTopic(topicId: number) {
   return results[0].retros.publicId as string;
 }
 
-export async function assertAccessToParticipant(participantId: number) {
+export async function assertAccessToParticipant(
+  participantId: number,
+  requireFacilitator: boolean = false,
+) {
   const results = await db
     .select()
     .from(participantTable)
@@ -90,5 +94,16 @@ export async function assertAccessToParticipant(participantId: number) {
   const participant = results[0];
   if (!participant) throw "Not found";
 
-  await assertAccess(participant.retroId, true); // user must be facilitator to update a participant
+  return await assertAccess(participant.retroId, requireFacilitator);
+}
+
+export async function assertReadAccessToParticipant(participantId: number) {
+  const results = await db
+    .select()
+    .from(participantTable)
+    .where(eq(participantTable.id, participantId));
+  const participant = results[0];
+  if (!participant) throw "Not found";
+
+  return await assertAccess(participant.retroId, true); // user must be facilitator to update a participant
 }

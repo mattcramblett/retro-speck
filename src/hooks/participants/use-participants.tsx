@@ -1,11 +1,18 @@
 "use client";
 import {
+  getParticipant,
   getParticipants,
   updateParticipant,
 } from "@/lib/server-actions/participants-actions";
-import { queryOptions, useMutation, useQuery } from "@tanstack/react-query";
+import {
+  queryOptions,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useUser } from "../auth/use-user";
 import { Participant } from "@/types/model";
+import { useRouter } from "next/navigation";
 
 export const participantsQuery = (retroId: number) =>
   queryOptions({
@@ -32,5 +39,32 @@ export const useUpdateParticipant = () => {
     mutationKey: ["participant", "updateAdmission"],
     mutationFn: async (participant: Partial<Participant>) =>
       await updateParticipant(participant),
+  });
+};
+
+export const useRefreshParticipant = (retroId: number) => {
+  const queryClient = useQueryClient();
+  const { data: user } = useUser();
+  const router = useRouter();
+
+  return useMutation({
+    mutationKey: ["participant", "refresh"],
+    mutationFn: async (participantId: number) =>
+      await getParticipant(participantId),
+    onSuccess: (participant: Participant) => {
+      if (participant.userId === user?.id) {
+        // Current participant was updated, reload page
+        router.refresh();
+      }
+      // Insert the refreshed participant into local state
+      queryClient.setQueryData(
+        participantsQuery(retroId).queryKey,
+        (prev?: Participant[]) => {
+          if (!prev) return;
+
+          return prev.map((p) => (p.id === participant.id ? participant : p));
+        },
+      );
+    },
   });
 };

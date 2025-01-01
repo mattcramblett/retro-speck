@@ -7,6 +7,7 @@ import {
   useUpdateParticipant,
 } from "@/hooks/participants/use-participants";
 import { useRetro } from "@/hooks/retros/use-retro";
+import { cn } from "@/lib/utils";
 import { Participant } from "@/types/model";
 import {
   ChevronLeft,
@@ -46,11 +47,15 @@ export function ParticipantPanel({
   // Handle optimistic update with `variables`
   const admitted =
     participants?.filter(
-      (p) => p.isAccepted || (p.id === variables?.id && variables?.isAccepted),
+      (p) =>
+        (p.id === variables?.id && variables?.isAccepted) ||
+        p.isAccepted,
     ) || [];
   const notAdmitted =
     participants?.filter(
-      (p) => !p.isAccepted || (p.id === variables?.id && variables?.isAccepted),
+      (p) =>
+        (p.id === variables?.id && !variables?.isAccepted) ||
+        !p.isAccepted,
     ) || [];
 
   if (!isExpanded) {
@@ -86,7 +91,14 @@ export function ParticipantPanel({
                 <UserRoundX className="text-muted-foreground" size={12} />
               </Button>
             )}
-            <div className="text-sm flex gap-1">
+            <div
+              className={cn(
+                "text-sm flex gap-1",
+                isPending && variables?.id === p.id
+                  ? "text-muted-foreground animate-pulse"
+                  : null,
+              )}
+            >
               {p.name}
               {p.userId === user?.id && (
                 <div className="text-muted-foreground">{"(you)"}</div>
@@ -117,7 +129,16 @@ export function ParticipantPanel({
                   <UserRoundCheck className="text-muted-foreground" size={12} />
                 </Button>
               )}
-              <div className="text-sm">{p.name}</div>
+              <div
+                className={cn(
+                  "text-sm",
+                  isPending && variables?.id === p.id
+                    ? "text-muted-foreground animate-pulse"
+                    : null,
+                )}
+              >
+                {p.name}
+              </div>
             </div>
           ))}
       </div>

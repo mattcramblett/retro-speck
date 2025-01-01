@@ -7,6 +7,7 @@ import { retroQuery } from "./retros/use-retro";
 import { EVENT } from "@/types/event";
 import { PhaseName } from "@/types/model";
 import { useRefreshTopic } from "./topics/use-topics";
+import { useRefreshParticipant } from "./participants/use-participants";
 
 export function useRealtime({
   retroPublicId,
@@ -20,6 +21,7 @@ export function useRealtime({
   const { useRefreshCard } = useRetroCards({ retroId });
   const { mutate: refreshCard } = useRefreshCard();
   const { mutate: refreshTopic } = useRefreshTopic(retroId);
+  const { mutate: refreshParticipant } = useRefreshParticipant(retroId);
 
   const client = useRef(makeBroadcastClient());
   const queryClient = useQueryClient();
@@ -48,13 +50,18 @@ export function useRealtime({
           if (!phase) return;
           if (onNewPhase) onNewPhase(phase);
         })
-        channel
-          .on("broadcast", { event: EVENT.topicUpdated }, async (event) => {
-            const topicId = event.payload?.topicId;
-            if (!topicId) return;
-            
-            refreshTopic(topicId);
-          })
+        .on("broadcast", { event: EVENT.topicUpdated }, async (event) => {
+          const topicId = event.payload?.topicId;
+          if (!topicId) return;
+
+          refreshTopic(topicId);
+        })
+        .on("broadcast", { event: EVENT.participantUpdated }, async (event) => {
+          const participantId = event.payload?.participantId;
+          if (!participantId) return;
+
+          refreshParticipant(participantId);
+        })
         .subscribe();
       console.log("Connected to the retro board.");
       return channel;

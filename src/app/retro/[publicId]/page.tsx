@@ -8,14 +8,7 @@ import { getColumns } from "@/lib/repositories/column-repository";
 import { getCards } from "@/lib/repositories/card-repository";
 import { getUserOrThrow } from "@/lib/server-actions/authN-actions";
 import { RetroBoard } from "@/components/retro/retro-board";
-import { SplashScreen } from "@/components/brand/splash-screen";
-import { Title } from "@/components/brand/title";
-
-const WaitingRoom = () => (
-  <SplashScreen>
-    <Title className="text-secondary">Waiting for the facilitator to let you in!</Title>
-  </SplashScreen>
-);
+import { WaitingRoom } from "@/components/waiting-room/waiting-room";
 
 export default async function RetroBoardPage({
   params,
@@ -33,7 +26,7 @@ export default async function RetroBoardPage({
   });
 
   if (!currentParticipant.isAccepted) {
-    return WaitingRoom();
+    return <WaitingRoom participant={currentParticipant} />;
   }
 
   const participants = await getParticipants(retro.id);
