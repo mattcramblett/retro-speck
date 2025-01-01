@@ -11,6 +11,7 @@ import { Participant } from "@/types/model";
 import {
   Minimize2,
   PanelLeft,
+  UserRound,
   UserRoundCheck,
   UserRoundX,
 } from "lucide-react";
@@ -93,6 +94,9 @@ export function ParticipantPanel({
                 <UserRoundX className="text-muted-foreground" size={12} />
               </Button>
             )}
+            {!isFacilitator && (
+              <UserRound className="text-muted-foreground" size={12} />
+            )}
             <div
               className={cn(
                 "text-sm flex gap-1",
@@ -130,6 +134,9 @@ export function ParticipantPanel({
                 >
                   <UserRoundCheck className="text-muted-foreground" size={12} />
                 </Button>
+              )}
+              {!isFacilitator && (
+                <UserRound className="text-muted-foreground" size={12} />
               )}
               <div
                 className={cn(
