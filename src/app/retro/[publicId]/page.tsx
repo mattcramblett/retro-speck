@@ -27,7 +27,7 @@ export default async function RetroBoardPage({
   });
 
   if (!currentParticipant.isAccepted) {
-    return <WaitingRoom participant={currentParticipant} />;
+    return <WaitingRoom retroId={retro.id} participant={currentParticipant} />;
   }
 
   const participants = await getParticipants(retro.id);

@@ -8,6 +8,7 @@ import { PhaseNav } from "./phase/phase-nav";
 import { SequenceLayout } from "./board-layout/sequence-layout";
 import { SummaryLayout } from "./board-layout/summary-layout";
 import { ParticipantPanel } from "./participant/participant-panel";
+import { useToast } from "@/hooks/use-toast";
 
 export function RetroBoard({
   initialRetro,
@@ -24,6 +25,15 @@ export function RetroBoard({
   const { data: retro } = useRetro(retroId, { initialData: initialRetro });
   const phase = getPhase(retro?.phase);
 
+  const { toast } = useToast();
+  const handleError = (title: string) => {
+    toast({
+      variant: "destructive",
+      title,
+      description: "Please refresh the page and try again.",
+    });
+  }
+
   return (
     <>
       <ConnectionStatus
@@ -36,6 +46,7 @@ export function RetroBoard({
           <ParticipantPanel
             retroId={retroId}
             initialParticipants={initialParticipants}
+            onError={handleError}
           />
           {phase.layoutType === "column" && (
             <ColumnLayout

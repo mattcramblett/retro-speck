@@ -1,4 +1,3 @@
-"use client";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useUser } from "@/hooks/auth/use-user";
@@ -10,7 +9,7 @@ import { useRetro } from "@/hooks/retros/use-retro";
 import { cn } from "@/lib/utils";
 import { Participant } from "@/types/model";
 import {
-  ChevronLeft,
+  Minimize2,
   PanelLeft,
   UserRoundCheck,
   UserRoundX,
@@ -20,9 +19,11 @@ import { useState } from "react";
 export function ParticipantPanel({
   retroId,
   initialParticipants,
+  onError,
 }: {
   retroId: number;
   initialParticipants: Participant[];
+  onError: (title: string) => void;
 }) {
   const [isExpanded, setIsExpanded] = useState(true);
 
@@ -39,6 +40,7 @@ export function ParticipantPanel({
     isError,
     variables,
   } = useUpdateParticipant();
+  if (isError) onError("Failed to update participant");
 
   const handleAdmission = (id: number, isAccepted: boolean) => {
     updateParticipant({ id, isAccepted });
@@ -72,7 +74,7 @@ export function ParticipantPanel({
     <div className="flex flex-col h-full bg-card min-w-60 xl:min-w-80 overflow-x-scroll tiny-scrollbar px-4 py-4 animate-in animate-out">
       <div className="w-full flex items-center gap-2 mb-2">
         <Button variant="icon" size="bare" onClick={() => setIsExpanded(false)}>
-          <ChevronLeft className="text-muted-foreground" size={12} />
+          <Minimize2 className="text-muted-foreground" size={12} />
         </Button>
         <h2 className="font-bold text-md">Participants</h2>
       </div>
