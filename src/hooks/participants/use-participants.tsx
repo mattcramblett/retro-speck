@@ -1,6 +1,9 @@
 "use client";
-import { getParticipants } from "@/lib/server-actions/participants-actions";
-import { queryOptions, useQuery } from "@tanstack/react-query";
+import {
+  getParticipants,
+  updateParticipant,
+} from "@/lib/server-actions/participants-actions";
+import { queryOptions, useMutation, useQuery } from "@tanstack/react-query";
 import { useUser } from "../auth/use-user";
 import { Participant } from "@/types/model";
 
@@ -21,5 +24,13 @@ export const useCurrentParticipant = (retroId: number) => {
     ...participantsQuery(retroId),
     select: (participants) =>
       participants.find((p: Participant) => p.userId === user?.id),
+  });
+};
+
+export const useUpdateParticipant = () => {
+  return useMutation({
+    mutationKey: ["participant", "updateAdmission"],
+    mutationFn: async (participant: Partial<Participant>) =>
+      await updateParticipant(participant),
   });
 };

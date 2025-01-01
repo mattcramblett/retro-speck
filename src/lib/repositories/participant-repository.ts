@@ -1,8 +1,9 @@
 import { db } from "@/db";
 import { participantsInRetroSpeck as participantTable } from "@/db/schema";
-import { and, eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { Participant } from "@/types/model";
 import { uuidv4 } from "../utils";
+import { nextTick } from "process";
 
 export async function getParticipants(retroId: number): Promise<Participant[]> {
   const results = await db
@@ -13,7 +14,10 @@ export async function getParticipants(retroId: number): Promise<Participant[]> {
   return results as Participant[];
 }
 
-export async function getCurrentParticipant(retroId: number, userId: string): Promise<Participant> {
+export async function getCurrentParticipant(
+  retroId: number,
+  userId: string,
+): Promise<Participant> {
   const maybeResults = await db
     .select()
     .from(participantTable)
@@ -66,4 +70,26 @@ export async function ensureParticipant({
     .returning();
   if (!results.length) throw "Failed to setup participant";
   return results[0] as Participant;
+}
+
+export async function updateParticipant(
+  participant: Partial<Participant>,
+): Promise<Participant> {
+  const result = await db
+    .update(participantTable)
+    .set({
+      ...participant,
+      // No updates allowed to these fields:
+      id: undefined,
+      publicId: undefined,
+      name: undefined,
+      retroId: undefined,
+      userId: undefined,
+      createdAt: undefined,
+    })
+    .where(eq(participantTable.id, participant.id || 0))
+    .returning();
+  if (!result.length) throw "Not found";
+
+  return result[0] as Participant;
 }

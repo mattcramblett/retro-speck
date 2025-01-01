@@ -1,11 +1,19 @@
-import { Badge } from "@/components/ui/badge";
+"use client"
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useUser } from "@/hooks/auth/use-user";
-import { useParticipants } from "@/hooks/participants/use-participants";
+import {
+  useParticipants,
+  useUpdateParticipant,
+} from "@/hooks/participants/use-participants";
 import { useRetro } from "@/hooks/retros/use-retro";
 import { Participant } from "@/types/model";
-import { ChevronLeft, PanelLeft, UserRoundCheck, UserRoundX } from "lucide-react";
+import {
+  ChevronLeft,
+  PanelLeft,
+  UserRoundCheck,
+  UserRoundX,
+} from "lucide-react";
 import { useState } from "react";
 
 export function ParticipantPanel({
@@ -23,6 +31,17 @@ export function ParticipantPanel({
   const { data: retro } = useRetro(retroId);
   const { data: user } = useUser();
   const isFacilitator = retro?.facilitatorUserId === user?.id;
+
+  const {
+    mutate: updateParticipant,
+    isPending,
+    isError,
+    variables,
+  } = useUpdateParticipant();
+
+  const handleAdmission = (id: number, isAccepted: boolean) => {
+    updateParticipant({ id, isAccepted });
+  }
 
   const admitted = participants?.filter((p) => p.isAccepted) || [];
   const notAdmitted = participants?.filter((p) => !p.isAccepted) || [];
@@ -53,8 +72,8 @@ export function ParticipantPanel({
               <Button
                 variant="icon"
                 size="bare"
-                onClick={() => setIsExpanded(false)}
-                disabled={p.userId === retro?.facilitatorUserId}
+                onClick={() => handleAdmission(p.id, false)}
+                disabled={p.userId === retro?.facilitatorUserId || isPending}
                 title={`Reject ${p.name}`}
               >
                 <UserRoundX className="text-muted-foreground" size={12} />
@@ -84,15 +103,14 @@ export function ParticipantPanel({
                 <Button
                   variant="icon"
                   size="bare"
-                  onClick={() => setIsExpanded(false)}
+                  onClick={() => handleAdmission(p.id, true)}
                   title={`Admit ${p.name}`}
+                  disabled={isPending}
                 >
                   <UserRoundCheck className="text-muted-foreground" size={12} />
                 </Button>
               )}
-              <div className="text-sm">
-                {p.name}
-              </div>
+              <div className="text-sm">{p.name}</div>
             </div>
           ))}
       </div>
