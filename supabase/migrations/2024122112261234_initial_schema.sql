@@ -78,6 +78,7 @@ CREATE INDEX idx_cards_participant_id ON cards (participant_id);
 CREATE INDEX idx_cards_retro_column_id ON cards (retro_column_id);
 CREATE INDEX idx_cards_topic_id ON cards (topic_id);
 CREATE INDEX idx_participants_retro_id ON participants (retro_id);
+CREATE UNIQUE INDEX idx_participants_user_id_retro_id ON participants (user_id, retro_id);
 CREATE INDEX idx_participants_user_id ON participants (user_id);
 CREATE INDEX idx_participants_public_id ON participants (public_id);
 CREATE INDEX idx_retro_columns_retro_id ON retro_columns (retro_id);
