@@ -56,6 +56,12 @@ export function useRealtime({
 
           refreshTopic(topicId);
         })
+        .on("broadcast", { event: EVENT.participantJoined }, async (event) => {
+          const participantId = event.payload?.participantId;
+          if (!participantId) return;
+
+          refreshParticipant(participantId);
+        })
         .on("broadcast", { event: EVENT.participantUpdated }, async (event) => {
           const participantId = event.payload?.participantId;
           if (!participantId) return;

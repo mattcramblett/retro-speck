@@ -4,6 +4,9 @@ import { and, eq, sql } from "drizzle-orm";
 import { Participant } from "@/types/model";
 import { uuidv4 } from "../utils";
 import { nextTick } from "process";
+import { EVENT } from "@/types/event";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
 
 export async function getParticipants(retroId: number): Promise<Participant[]> {
   const results = await db
@@ -36,10 +39,12 @@ export async function getCurrentParticipant(
 
 // Find or create by (retroId, userId)
 export async function ensureParticipant({
+  retroPublicId,
   retroId,
   userId,
   email,
 }: {
+  retroPublicId: string,
   retroId: number;
   userId: string;
   email: string;
@@ -69,6 +74,16 @@ export async function ensureParticipant({
     })
     .returning();
   if (!results.length) throw "Failed to setup participant";
+  const participant = results[0] as Participant;
+
+  const supabase = createServerComponentClient({ cookies });
+  await supabase.channel(retroPublicId).send({
+    type: "broadcast",
+    event: EVENT.participantJoined,
+    payload: {
+      participantId: participant.id,
+    },
+  });
   return results[0] as Participant;
 }
 

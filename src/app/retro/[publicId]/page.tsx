@@ -20,6 +20,7 @@ export default async function RetroBoardPage({
 
   const retro = await getRetroByPublicId(publicId);
   const currentParticipant = await ensureParticipant({
+    retroPublicId: retro.publicId,
     retroId: retro.id,
     email: user.email || "unknown",
     userId: user.id,

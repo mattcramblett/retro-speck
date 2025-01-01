@@ -110,12 +110,12 @@ export function ParticipantPanel({
             </div>
           </div>
         ))}
-        {isFacilitator && notAdmitted.length > 0 && (
+        {notAdmitted.length > 0 && (
           <div className="text-sm text-muted-foreground mt-4">
             Waiting to be let in:
           </div>
         )}
-        {isFacilitator &&
+        {
           notAdmitted.map((p) => (
             <div className="flex items-center gap-2" key={p.id}>
               {isFacilitator && (

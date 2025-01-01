@@ -13,6 +13,7 @@ import {
 import { useUser } from "../auth/use-user";
 import { Participant } from "@/types/model";
 import { useRouter } from "next/navigation";
+import { useToast } from "../use-toast";
 
 export const participantsQuery = (retroId: number) =>
   queryOptions({
@@ -46,6 +47,7 @@ export const useRefreshParticipant = (retroId: number) => {
   const queryClient = useQueryClient();
   const { data: user } = useUser();
   const router = useRouter();
+  const { toast } = useToast();
 
   return useMutation({
     mutationKey: ["participant", "refresh"],
@@ -61,6 +63,14 @@ export const useRefreshParticipant = (retroId: number) => {
         participantsQuery(retroId).queryKey,
         (prev?: Participant[]) => {
           if (!prev) return;
+
+          const isNew = prev?.findIndex((p) => p.id === participant.id) === -1;
+          if (isNew) {
+            toast({
+              title: `${participant.name} has joined!`
+            });
+            return [...(prev || []), participant];
+          }
 
           return prev.map((p) => (p.id === participant.id ? participant : p));
         },
