@@ -37,7 +37,7 @@ export function ColumnLayout({
     useCreateCard();
 
   const { data: topics, isPending: isPendingTopics } = useTopics(retroId, {
-    enabled: phase.name === "grouping",
+    enabled: phase.usesTopics
   });
 
   return (
