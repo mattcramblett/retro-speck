@@ -41,7 +41,7 @@ export function RetroBoard({
         retroPublicId={initialRetro.publicId}
       />
       <div className="flex flex-col size-full">
-        <PhaseNav retroId={retroId} />
+        <PhaseNav retroId={retroId} onError={handleError} />
         <div className="flex size-full">
           <ParticipantPanel
             retroId={retroId}

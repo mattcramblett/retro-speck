@@ -1,6 +1,6 @@
 "use client";
 import { advancePhase, getRetro } from "@/lib/server-actions/retro-actions";
-import { queryOptions, useMutation, useQuery } from "@tanstack/react-query";
+import { MutateOptions, queryOptions, useMutation, useQuery } from "@tanstack/react-query";
 
 export const retroQuery = (retroId: number) =>
   queryOptions({
@@ -18,9 +18,10 @@ export const useRetro = (
   });
 };
 
-export const useAdvancePhase = (retroId: number) => {
+export const useAdvancePhase = (retroId: number, opts?: MutateOptions) => {
   return useMutation({
     mutationKey: ["retro", "advancePhase"],
     mutationFn: () => advancePhase(retroId),
+    ...(opts || {}),
   });
 }

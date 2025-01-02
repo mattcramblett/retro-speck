@@ -5,6 +5,7 @@ import {
   updateParticipant,
 } from "@/lib/server-actions/participants-actions";
 import {
+  MutateOptions,
   queryOptions,
   useMutation,
   useQuery,
@@ -35,11 +36,14 @@ export const useCurrentParticipant = (retroId: number) => {
   });
 };
 
-export const useUpdateParticipant = () => {
+export const useUpdateParticipant = (
+  opts?: MutateOptions<Participant, Error, Partial<Participant>>,
+) => {
   return useMutation({
     mutationKey: ["participant", "updateAdmission"],
     mutationFn: async (participant: Partial<Participant>) =>
       await updateParticipant(participant),
+    ...(opts || {}),
   });
 };
 
@@ -67,7 +71,7 @@ export const useRefreshParticipant = (retroId: number) => {
           const isNew = prev?.findIndex((p) => p.id === participant.id) === -1;
           if (isNew) {
             toast({
-              title: `${participant.name} has joined!`
+              title: `${participant.name} has joined!`,
             });
             return [...(prev || []), participant];
           }

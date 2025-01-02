@@ -1,5 +1,3 @@
-"use client";
-
 import { Title } from "@/components/brand/title";
 import { useAdvancePhase, useRetro } from "@/hooks/retros/use-retro";
 import { getPhase } from "@/types/model";
@@ -12,22 +10,20 @@ import {
 import { ArrowRight, Info } from "lucide-react";
 import { useCurrentParticipant } from "@/hooks/participants/use-participants";
 import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
 
-export function PhaseNav({ retroId }: { retroId: number }) {
+export function PhaseNav({
+  retroId,
+  onError,
+}: {
+  retroId: number;
+  onError: (title: string) => void;
+}) {
   const { data: retro } = useRetro(retroId);
   const phase = getPhase(retro?.phase);
 
-  const { mutate, isPending, isError } = useAdvancePhase(retroId);
-  const { toast } = useToast();
-  if (isError) {
-    toast({
-      variant: "destructive",
-      title: "Could not update the retro",
-      description:
-        "There was a problem updating the retro. Please refresh the page and try again.",
-    });
-  }
+  const { mutate, isPending } = useAdvancePhase(retroId, {
+    onError: () => onError("Unable to progress"),
+  });
 
   const { data: participant } = useCurrentParticipant(retroId);
 

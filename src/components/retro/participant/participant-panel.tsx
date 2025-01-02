@@ -38,10 +38,10 @@ export function ParticipantPanel({
   const {
     mutate: updateParticipant,
     isPending,
-    isError,
     variables,
-  } = useUpdateParticipant();
-  if (isError) onError("Failed to update participant");
+  } = useUpdateParticipant({
+    onError: () => onError("Failed to update participant"),
+  });
 
   const handleAdmission = (id: number, isAccepted: boolean) => {
     updateParticipant({ id, isAccepted });
@@ -50,15 +50,12 @@ export function ParticipantPanel({
   // Handle optimistic update with `variables`
   const admitted =
     participants?.filter(
-      (p) =>
-        (p.id === variables?.id && variables?.isAccepted) ||
-        p.isAccepted,
+      (p) => (p.id === variables?.id && variables?.isAccepted) || p.isAccepted,
     ) || [];
   const notAdmitted =
     participants?.filter(
       (p) =>
-        (p.id === variables?.id && !variables?.isAccepted) ||
-        !p.isAccepted,
+        (p.id === variables?.id && !variables?.isAccepted) || !p.isAccepted,
     ) || [];
 
   if (!isExpanded) {
@@ -121,35 +118,34 @@ export function ParticipantPanel({
             Waiting to be let in:
           </div>
         )}
-        {
-          notAdmitted.map((p) => (
-            <div className="flex items-center gap-2" key={p.id}>
-              {isFacilitator && (
-                <Button
-                  variant="icon"
-                  size="bare"
-                  onClick={() => handleAdmission(p.id, true)}
-                  title={`Admit ${p.name}`}
-                  disabled={isPending}
-                >
-                  <UserRoundCheck className="text-muted-foreground" size={12} />
-                </Button>
-              )}
-              {!isFacilitator && (
-                <UserRound className="text-muted-foreground" size={12} />
-              )}
-              <div
-                className={cn(
-                  "text-sm",
-                  isPending && variables?.id === p.id
-                    ? "text-muted-foreground animate-pulse"
-                    : null,
-                )}
+        {notAdmitted.map((p) => (
+          <div className="flex items-center gap-2" key={p.id}>
+            {isFacilitator && (
+              <Button
+                variant="icon"
+                size="bare"
+                onClick={() => handleAdmission(p.id, true)}
+                title={`Admit ${p.name}`}
+                disabled={isPending}
               >
-                {p.name}
-              </div>
+                <UserRoundCheck className="text-muted-foreground" size={12} />
+              </Button>
+            )}
+            {!isFacilitator && (
+              <UserRound className="text-muted-foreground" size={12} />
+            )}
+            <div
+              className={cn(
+                "text-sm",
+                isPending && variables?.id === p.id
+                  ? "text-muted-foreground animate-pulse"
+                  : null,
+              )}
+            >
+              {p.name}
             </div>
-          ))}
+          </div>
+        ))}
       </div>
     </div>
   );
