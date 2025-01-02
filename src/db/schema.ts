@@ -1,8 +1,35 @@
-import { pgTable, pgSchema, index, foreignKey, integer, varchar, timestamp, uuid, boolean } from "drizzle-orm/pg-core"
+import { pgTable, pgSchema, index, foreignKey, integer, timestamp, varchar, uuid, uniqueIndex, boolean } from "drizzle-orm/pg-core"
 import { sql } from "drizzle-orm"
 
 export const retroSpeck = pgSchema("retro_speck");
 
+
+export const votesInRetroSpeck = retroSpeck.table("votes", {
+	id: integer().primaryKey().generatedByDefaultAsIdentity({ name: "retro_speck.votes_id_seq", startWith: 1, increment: 1, minValue: 1, maxValue: 2147483647, cache: 1 }),
+	participantId: integer("participant_id").notNull(),
+	topicId: integer("topic_id").notNull(),
+	retroId: integer("retro_id").notNull(),
+	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(),
+}, (table) => [
+	index("idx_votes_participant_id").using("btree", table.participantId.asc().nullsLast().op("int4_ops")),
+	index("idx_votes_retro_id").using("btree", table.retroId.asc().nullsLast().op("int4_ops")),
+	index("idx_votes_topic_id").using("btree", table.topicId.asc().nullsLast().op("int4_ops")),
+	foreignKey({
+			columns: [table.topicId],
+			foreignColumns: [topicsInRetroSpeck.id],
+			name: "votes_topic_id_fkey"
+		}),
+	foreignKey({
+			columns: [table.participantId],
+			foreignColumns: [participantsInRetroSpeck.id],
+			name: "votes_participant_id_fkey"
+		}),
+	foreignKey({
+			columns: [table.retroId],
+			foreignColumns: [retrosInRetroSpeck.id],
+			name: "votes_retro_id_fkey"
+		}),
+]);
 
 export const topicsInRetroSpeck = retroSpeck.table("topics", {
 	id: integer().primaryKey().generatedByDefaultAsIdentity({ name: "retro_speck.topics_id_seq", startWith: 1, increment: 1, minValue: 1, maxValue: 2147483647, cache: 1 }),
@@ -68,6 +95,7 @@ export const participantsInRetroSpeck = retroSpeck.table("participants", {
 	index("idx_participants_public_id").using("btree", table.publicId.asc().nullsLast().op("uuid_ops")),
 	index("idx_participants_retro_id").using("btree", table.retroId.asc().nullsLast().op("int4_ops")),
 	index("idx_participants_user_id").using("btree", table.userId.asc().nullsLast().op("uuid_ops")),
+	uniqueIndex("idx_participants_user_id_retro_id").using("btree", table.userId.asc().nullsLast().op("uuid_ops"), table.retroId.asc().nullsLast().op("uuid_ops")),
 	foreignKey({
 			columns: [table.retroId],
 			foreignColumns: [retrosInRetroSpeck.id],
@@ -101,32 +129,5 @@ export const cardsInRetroSpeck = retroSpeck.table("cards", {
 			columns: [table.retroColumnId],
 			foreignColumns: [retroColumnsInRetroSpeck.id],
 			name: "cards_retro_column_id_fkey"
-		}),
-]);
-
-export const votesInRetroSpeck = retroSpeck.table("votes", {
-	id: integer().primaryKey().generatedByDefaultAsIdentity({ name: "retro_speck.votes_id_seq", startWith: 1, increment: 1, minValue: 1, maxValue: 2147483647, cache: 1 }),
-	participantId: integer("participant_id").notNull(),
-	cardId: integer("card_id").notNull(),
-	retroId: integer("retro_id").notNull(),
-	createdAt: timestamp("created_at", { mode: 'string' }).defaultNow().notNull(),
-}, (table) => [
-	index("idx_votes_card_id").using("btree", table.cardId.asc().nullsLast().op("int4_ops")),
-	index("idx_votes_participant_id").using("btree", table.participantId.asc().nullsLast().op("int4_ops")),
-	index("idx_votes_retro_id").using("btree", table.retroId.asc().nullsLast().op("int4_ops")),
-	foreignKey({
-			columns: [table.cardId],
-			foreignColumns: [cardsInRetroSpeck.id],
-			name: "votes_card_id_fkey"
-		}),
-	foreignKey({
-			columns: [table.participantId],
-			foreignColumns: [participantsInRetroSpeck.id],
-			name: "votes_participant_id_fkey"
-		}),
-	foreignKey({
-			columns: [table.retroId],
-			foreignColumns: [retrosInRetroSpeck.id],
-			name: "votes_retro_id_fkey"
 		}),
 ]);
