@@ -68,10 +68,10 @@ export function ColumnLayout({
                   />
                 );
               })}
-          {phase.name === "grouping" && isPendingTopics && (
+          {phase.usesTopics && isPendingTopics && (
             <Skeleton className="w-full h-96 rounded-lg" />
           )}
-          {phase.name === "grouping" &&
+          {phase.usesTopics &&
             topics
               ?.filter((t) => t?.retroColumnId === column.id)
               .sort((a, b) => b.id - a.id)
