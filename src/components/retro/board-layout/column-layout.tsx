@@ -73,7 +73,7 @@ export function ColumnLayout({
           )}
           {phase.name === "grouping" &&
             topics
-              ?.filter((t) => t.retroColumnId === column.id)
+              ?.filter((t) => t?.retroColumnId === column.id)
               .sort((a, b) => b.id - a.id)
               .map((topic) => (
                 <RetroTopic

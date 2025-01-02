@@ -1,11 +1,21 @@
 "use server";
 import { db } from "@/db";
-import { eq, desc, sql, is, isNull, and } from "drizzle-orm";
+import {
+  eq,
+  desc,
+  sql,
+  isNull,
+  and,
+  inArray,
+  isNotNull,
+  count,
+} from "drizzle-orm";
 import {
   retrosInRetroSpeck as retroTable,
   cardsInRetroSpeck as cardTable,
   retroColumnsInRetroSpeck as columnTable,
   topicsInRetroSpeck as topicTable,
+  participantsInRetroSpeck as participantTable,
 } from "@/db/schema";
 import { Card } from "@/types/model";
 
@@ -43,7 +53,7 @@ export async function handleGroupingPhase(retroId: number) {
 }
 
 export async function handleVotingPhase(retroId: number) {
-  // Delete topics with 0 cards
+  // Topics with 0 cards
   const toDelete = await db
     .select()
     .from(topicTable)
@@ -53,6 +63,30 @@ export async function handleVotingPhase(retroId: number) {
     .where(and(isNull(cardTable.id), eq(retroTable.id, retroId)));
   const topicIdsToDelete = toDelete.map((it) => it.topics.id);
 
-  // Count all remaining topics and calculate vote allotment
-  // Assign vote allotment to participants
+  // Count topics which will be voted on
+  const forVoting = await db
+    .selectDistinct({ id: topicTable.id })
+    .from(topicTable)
+    .innerJoin(columnTable, eq(topicTable.retroColumnId, columnTable.id))
+    .innerJoin(retroTable, eq(retroTable.id, columnTable.retroId))
+    .leftJoin(cardTable, eq(cardTable.topicId, topicTable.id))
+    .where(and(isNotNull(cardTable.id), eq(retroTable.id, retroId)));
+
+  const topicCount = forVoting.length;
+  const voteAllotment = Math.max(1, Math.floor(topicCount / 3));
+
+  await db.transaction(async (tx) => {
+    // Delete empty topics
+    await tx.delete(topicTable).where(inArray(topicTable.id, topicIdsToDelete));
+    // Assign vote allotment to participants
+    await tx
+      .update(participantTable)
+      .set({ voteAllotment })
+      .where(
+        and(
+          eq(participantTable.retroId, retroId),
+          eq(participantTable.isAccepted, true),
+        ),
+      );
+  });
 }
