@@ -2,11 +2,13 @@
 
 import { useRetroCards } from "@/hooks/cards/use-retro-cards";
 import { useTopic } from "@/hooks/topics/use-topics";
-import { Card } from "@/types/model";
+import { Card, getPhase } from "@/types/model";
 import { RetroCardGrouped } from "../card/retro-card-grouped";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { TopicTitle } from "./topic-title";
+import { useRetro } from "@/hooks/retros/use-retro";
+import { TopicVotes } from "./topic-votes";
 
 export function RetroTopic({
   retroId,
@@ -16,6 +18,9 @@ export function RetroTopic({
   topicId: number;
 }) {
   const [isExpanded, setIsExpanded] = useState(true);
+
+  const { data: retro } = useRetro(retroId);
+  const phase = getPhase(retro?.phase);
 
   const { data: topic } = useTopic(retroId, topicId);
   const { useCards } = useRetroCards({ retroId });
@@ -67,6 +72,7 @@ export function RetroTopic({
               );
             }
           })}
+        {phase.showsVotes && <TopicVotes retroId={retroId} topicId={topicId} /> }
       </div>
     </div>
   );

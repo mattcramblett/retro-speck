@@ -35,6 +35,7 @@ export type Phase = {
   description: string;
   isDraftState: boolean; // whether cards are allowed to be edited
   usesTopics?: boolean; // whether cards should be aggregated into topics
+  showsVotes?: boolean; // whether votes should be shown
   layoutType: LayoutType; // Format in which the board is displayed
   stateFunction?: (retroId: number) => Promise<void>; // Hook that manages the data state when transitioning to phase
 };
@@ -73,6 +74,7 @@ export const phases: Record<PhaseName, Phase> = {
     description: "Vote on the topics you want to discuss.",
     isDraftState: false,
     usesTopics: true,
+    showsVotes: true,
     layoutType: "column",
     stateFunction: handleVotingPhase,
   },
@@ -83,6 +85,7 @@ export const phases: Record<PhaseName, Phase> = {
     description: "Take time to discuss each topic.",
     isDraftState: false,
     usesTopics: true,
+    showsVotes: true,
     layoutType: "sequence",
   },
   complete: {
@@ -92,6 +95,7 @@ export const phases: Record<PhaseName, Phase> = {
     description: "The retrospective is complete!",
     isDraftState: false,
     usesTopics: true,
+    showsVotes: true,
     layoutType: "summary",
   },
 };
