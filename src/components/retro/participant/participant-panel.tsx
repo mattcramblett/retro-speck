@@ -8,14 +8,10 @@ import {
 import { useRetro } from "@/hooks/retros/use-retro";
 import { cn } from "@/lib/utils";
 import { Participant } from "@/types/model";
-import {
-  Minimize2,
-  PanelLeft,
-  UserRound,
-  UserRoundCheck,
-  UserRoundX,
-} from "lucide-react";
+import { Minimize2, PanelLeft, UserRound, UserRoundCheck } from "lucide-react";
 import { useState } from "react";
+import { AdmittedParticipant } from "./admitted-participant";
+import { WaitingParticipant } from "./waiting-participant";
 
 export function ParticipantPanel({
   retroId,
@@ -35,28 +31,9 @@ export function ParticipantPanel({
   const { data: user } = useUser();
   const isFacilitator = retro?.facilitatorUserId === user?.id;
 
-  const {
-    mutate: updateParticipant,
-    isPending,
-    variables,
-  } = useUpdateParticipant({
-    onError: () => onError("Failed to update participant"),
-  });
-
-  const handleAdmission = (id: number, isAccepted: boolean) => {
-    updateParticipant({ id, isAccepted });
-  };
-
   // Handle optimistic update with `variables`
-  const admitted =
-    participants?.filter(
-      (p) => (p.id === variables?.id && variables?.isAccepted) || p.isAccepted,
-    ) || [];
-  const notAdmitted =
-    participants?.filter(
-      (p) =>
-        (p.id === variables?.id && !variables?.isAccepted) || !p.isAccepted,
-    ) || [];
+  const admitted = participants?.filter((p) => p.isAccepted) || [];
+  const notAdmitted = participants?.filter((p) => !p.isAccepted) || [];
 
   if (!isExpanded) {
     return (
@@ -79,39 +56,13 @@ export function ParticipantPanel({
       <Separator className="mb-3" />
       <div className="size-full flex flex-col gap-2">
         {admitted.map((p) => (
-          <div className="flex items-center gap-2" key={p.id}>
-            {isFacilitator && (
-              <Button
-                variant="icon"
-                size="bare"
-                onClick={() => handleAdmission(p.id, false)}
-                disabled={p.userId === retro?.facilitatorUserId || isPending}
-                title={`Reject ${p.name}`}
-              >
-                <UserRoundX className="text-muted-foreground" size={12} />
-              </Button>
-            )}
-            {!isFacilitator && (
-              <UserRound className="text-muted-foreground" size={12} />
-            )}
-            <div
-              className={cn(
-                "text-sm flex gap-1",
-                isPending && variables?.id === p.id
-                  ? "text-muted-foreground animate-pulse"
-                  : null,
-              )}
-            >
-              {p.name}
-              {p.userId === user?.id && (
-                <div className="text-muted-foreground">{"(you)"}</div>
-              )}
-              {p.userId !== user?.id &&
-                p.userId === retro?.facilitatorUserId && (
-                  <div className="text-muted-foreground">{"(facilitator)"}</div>
-                )}
-            </div>
-          </div>
+          <AdmittedParticipant
+            key={p.id}
+            retroId={retroId}
+            participant={p}
+            isFacilitator={isFacilitator}
+            onError={onError}
+          />
         ))}
         {notAdmitted.length > 0 && (
           <div className="text-sm text-muted-foreground mt-4">
@@ -119,32 +70,12 @@ export function ParticipantPanel({
           </div>
         )}
         {notAdmitted.map((p) => (
-          <div className="flex items-center gap-2" key={p.id}>
-            {isFacilitator && (
-              <Button
-                variant="icon"
-                size="bare"
-                onClick={() => handleAdmission(p.id, true)}
-                title={`Admit ${p.name}`}
-                disabled={isPending}
-              >
-                <UserRoundCheck className="text-muted-foreground" size={12} />
-              </Button>
-            )}
-            {!isFacilitator && (
-              <UserRound className="text-muted-foreground" size={12} />
-            )}
-            <div
-              className={cn(
-                "text-sm",
-                isPending && variables?.id === p.id
-                  ? "text-muted-foreground animate-pulse"
-                  : null,
-              )}
-            >
-              {p.name}
-            </div>
-          </div>
+          <WaitingParticipant
+            key={p.id}
+            participant={p}
+            isFacilitator={isFacilitator}
+            onError={onError}
+          />
         ))}
       </div>
     </div>
