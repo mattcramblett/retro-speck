@@ -2,7 +2,7 @@
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCurrentParticipant } from "@/hooks/participants/use-participants";
 import { useRetro } from "@/hooks/retros/use-retro";
-import { useCreateVote, useVotes } from "@/hooks/votes/use-votes";
+import { useCreateVote, useDeleteVote, useVotes } from "@/hooks/votes/use-votes";
 import { getPhase, Vote } from "@/types/model";
 import { VoteBubbles } from "./votes-bubbles";
 
@@ -45,6 +45,8 @@ export function TopicVotes({
 
   const { mutate: createVote, isPending: isPendingCreateVote } =
     useCreateVote();
+  const { mutate: removeVote, isPending: isPendingRemoveVote } =
+    useDeleteVote();
 
   if (isPending) {
     return <Skeleton className="h-6 max-w-24 rounded-md" />;
@@ -59,7 +61,8 @@ export function TopicVotes({
         label={label}
         showCreate={phase.name === "voting"}
         onCreate={() => createVote(topicId)}
-        createEnabled={isPendingCreateVote || votesExceeded}
+        onRemove={() => removeVote(topicId)}
+        buttonsEnabled={isPendingCreateVote || isPendingRemoveVote || votesExceeded}
       />
     </div>
   );

@@ -3,6 +3,7 @@ import { assertAccess, assertAccessToTopic } from "./authZ-action";
 import {
   getVotes as queryVotes,
   createVote as insertVote,
+  deleteVote,
   getParticipantVotes,
 } from "../repositories/vote-repository";
 import { getUserOrThrow } from "./authN-actions";
@@ -31,4 +32,19 @@ export async function createVote(topicId: number) {
     retroId: participant.retroId,
   });
   return vote;
+}
+
+export async function removeVote(topicId: number) {
+  const retroPublicId = await assertAccessToTopic(topicId);
+  const user = await getUserOrThrow();
+  const participant = await getParticipantInRetro({
+    retroPublicId,
+    userId: user.id,
+  });
+
+  await deleteVote({
+    topicId,
+    participantId: participant.id,
+    retroId: participant.retroId,
+  });
 }
