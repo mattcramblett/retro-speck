@@ -3,12 +3,10 @@ import { Separator } from "@/components/ui/separator";
 import { useUser } from "@/hooks/auth/use-user";
 import {
   useParticipants,
-  useUpdateParticipant,
 } from "@/hooks/participants/use-participants";
 import { useRetro } from "@/hooks/retros/use-retro";
-import { cn } from "@/lib/utils";
 import { Participant } from "@/types/model";
-import { Minimize2, PanelLeft, UserRound, UserRoundCheck } from "lucide-react";
+import { Minimize2, PanelLeft } from "lucide-react";
 import { useState } from "react";
 import { AdmittedParticipant } from "./admitted-participant";
 import { WaitingParticipant } from "./waiting-participant";
