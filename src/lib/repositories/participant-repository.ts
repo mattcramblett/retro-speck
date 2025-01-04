@@ -1,9 +1,11 @@
 import { db } from "@/db";
-import { participantsInRetroSpeck as participantTable } from "@/db/schema";
-import { and, eq, sql } from "drizzle-orm";
+import {
+  participantsInRetroSpeck as participantTable,
+  retrosInRetroSpeck as retroTable,
+} from "@/db/schema";
+import { and, eq } from "drizzle-orm";
 import { Participant } from "@/types/model";
 import { uuidv4 } from "../utils";
-import { nextTick } from "process";
 import { EVENT } from "@/types/event";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
@@ -44,7 +46,7 @@ export async function ensureParticipant({
   userId,
   email,
 }: {
-  retroPublicId: string,
+  retroPublicId: string;
   retroId: number;
   userId: string;
   email: string;
@@ -109,7 +111,9 @@ export async function updateParticipant(
   return result[0] as Participant;
 }
 
-export async function getParticipant(participantId: number): Promise<Participant> {
+export async function getParticipant(
+  participantId: number,
+): Promise<Participant> {
   const results = await db
     .select()
     .from(participantTable)
@@ -118,4 +122,26 @@ export async function getParticipant(participantId: number): Promise<Participant
   if (!participant) throw "Not found";
 
   return participant;
+}
+
+export async function getParticipantInRetro({
+  retroPublicId,
+  userId,
+}: {
+  retroPublicId: string;
+  userId: string;
+}) {
+  const results = await db
+    .select()
+    .from(participantTable)
+    .innerJoin(retroTable, eq(retroTable.id, participantTable.retroId))
+    .where(
+      and(
+        eq(retroTable.publicId, retroPublicId),
+        eq(participantTable.userId, userId),
+      ),
+    );
+  if (!results.length) throw "Not found"
+  
+  return results[0].participants as Participant;
 }

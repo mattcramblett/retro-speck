@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useCurrentParticipant } from "@/hooks/participants/use-participants";
 import { useRetro } from "@/hooks/retros/use-retro";
-import { useVotes } from "@/hooks/votes/use-votes";
+import { useCreateVote, useVotes } from "@/hooks/votes/use-votes";
 import { getPhase, Vote } from "@/types/model";
 import { PlusCircle } from "lucide-react";
 
@@ -32,6 +32,8 @@ export function TopicVotes({
             : true),
       ),
   });
+  const { mutate: createVote, isPending: isPendingCreateVote } =
+    useCreateVote();
 
   if (isPending) {
     return <Skeleton className="h-6 max-w-24 rounded-md" />;
@@ -47,9 +49,16 @@ export function TopicVotes({
       <Badge
         variant={votes?.length ? "default" : "secondary"}
         className="w-fit my-1"
-      >{label}</Badge>
+      >
+        {label}
+      </Badge>
       {phase.name === "voting" && (
-        <Button variant="icon" size="bare">
+        <Button
+          variant="icon"
+          size="bare"
+          onClick={() => createVote(topicId)}
+          disabled={isPendingCreateVote}
+        >
           <PlusCircle className="text-card-foreground" />
         </Button>
       )}

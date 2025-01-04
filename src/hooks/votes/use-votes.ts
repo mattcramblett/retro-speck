@@ -1,6 +1,7 @@
 "use client"
-import { getVotes } from "@/lib/server-actions/vote-actions";
-import { queryOptions, useQuery } from "@tanstack/react-query";
+import { createVote, getVotes } from "@/lib/server-actions/vote-actions";
+import { Vote } from "@/types/model";
+import { queryOptions, useMutation, UseMutationOptions, useQuery } from "@tanstack/react-query";
 
 export const voteQuery = (retroId: number) =>
   queryOptions({
@@ -15,5 +16,13 @@ export function useVotes(
   return useQuery({
     ...(opts || {}),
     ...voteQuery(retroId),
+  });
+}
+
+export const useCreateVote = (opts?: UseMutationOptions<Vote, Error, number>) => {
+  return useMutation({
+    mutationKey: ["vote", "create"],
+    mutationFn: (topicId: number) => createVote(topicId),
+    ...(opts || {}),
   });
 }
