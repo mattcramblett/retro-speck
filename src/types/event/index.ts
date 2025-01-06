@@ -5,5 +5,7 @@ export const EVENT = {
   participantJoined: "participantJoined",
   participantUpdated: "participantUpdated",
   participantAdmitted: "participantAdmitted",
+  voteAdded: "voteAdded",
+  voteRemoved: "voteRemoved",
 };
 

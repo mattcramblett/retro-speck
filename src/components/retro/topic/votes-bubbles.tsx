@@ -8,23 +8,28 @@ export function VoteBubbles({
   onCreate,
   onRemove,
   showCreate,
-  buttonsEnabled,
+  createEnabled,
+  removeEnabled,
 }: {
   label: string;
   votes: Vote[];
   onCreate: () => void;
-  onRemove: () => void;
+  onRemove: (voteId: number) => void;
   showCreate?: boolean;
-  buttonsEnabled?: boolean;
+  createEnabled?: boolean;
+  removeEnabled?: boolean;
 }) {
   return (
     <div className="flex items-center flex-wrap gap-1.5">
       <div className="text-sm text-muted-foreground">{label}</div>
       {votes.map((v) => (
-        <div
+        <Button
           key={v.id}
+          variant="icon"
+          size="bare"
           className="rounded-full w-4 h-4 bg-primary hover:bg-primary/60 transition-all"
-          onClick={() => buttonsEnabled ? onRemove() : null}
+          onClick={() => onRemove(v.id)}
+          disabled={!removeEnabled}
         />
       ))}
       {showCreate && (
@@ -32,7 +37,7 @@ export function VoteBubbles({
           variant="icon"
           size="bare"
           onClick={onCreate}
-          disabled={buttonsEnabled}
+          disabled={!createEnabled}
         >
           <PlusCircle className="text-card-foreground" />
         </Button>

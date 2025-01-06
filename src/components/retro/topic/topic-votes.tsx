@@ -61,8 +61,9 @@ export function TopicVotes({
         label={label}
         showCreate={phase.name === "voting"}
         onCreate={() => createVote(topicId)}
-        onRemove={() => removeVote(topicId)}
-        buttonsEnabled={isPendingCreateVote || isPendingRemoveVote || votesExceeded}
+        onRemove={(voteId: number) => removeVote(voteId)}
+        createEnabled={!isPendingCreateVote && !isPendingRemoveVote && !votesExceeded}
+        removeEnabled={!isPendingRemoveVote && !isPendingCreateVote}
       />
     </div>
   );

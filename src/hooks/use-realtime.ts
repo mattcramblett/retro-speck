@@ -8,6 +8,7 @@ import { EVENT } from "@/types/event";
 import { PhaseName } from "@/types/model";
 import { useRefreshTopic } from "./topics/use-topics";
 import { useRefreshParticipant } from "./participants/use-participants";
+import { useSyncNewVote, useSyncRemovedVote } from "./votes/use-votes";
 
 export function useRealtime({
   retroPublicId,
@@ -22,6 +23,8 @@ export function useRealtime({
   const { mutate: refreshCard } = useRefreshCard();
   const { mutate: refreshTopic } = useRefreshTopic(retroId);
   const { mutate: refreshParticipant } = useRefreshParticipant(retroId);
+  const { sync: syncNewVote } = useSyncNewVote(retroId);
+  const { sync: syncRemovedVote } = useSyncRemovedVote(retroId);
 
   const client = useRef(makeBroadcastClient());
   const queryClient = useQueryClient();
@@ -67,6 +70,14 @@ export function useRealtime({
           if (!participantId) return;
 
           refreshParticipant(participantId);
+        })
+        .on("broadcast", { event: EVENT.voteAdded }, async (event) => {
+          const { voteId, topicId, participantId } = event.payload || {};
+          syncNewVote({ voteId, topicId, participantId });
+        })
+        .on("broadcast", { event: EVENT.voteRemoved }, async (event) => {
+          const { voteId } = event.payload || {};
+          syncRemovedVote({ voteId });
         })
         .subscribe();
       console.log("Connected to the retro board.");

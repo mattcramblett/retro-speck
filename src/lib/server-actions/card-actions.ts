@@ -3,7 +3,7 @@ import { Card } from "@/types/model";
 import { getCard as findCard, getCards as fetchCards, updateCard as persistCard, createCard as insertCard } from "../repositories/card-repository";
 import { assertAccess, assertAccessToCard } from "./authZ-action";
 import { getUserOrThrow } from "./authN-actions";
-import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createServerActionClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { EVENT } from "@/types/event";
 
@@ -31,7 +31,7 @@ export async function updateCard(card: Partial<Card>): Promise<Card> {
   const retroPublicId = await assertAccessToCard(cardId);
   const updatedCard = await persistCard(card); 
   
-  const supabase = createServerComponentClient({ cookies })
+  const supabase = createServerActionClient({ cookies })
   await supabase.channel(retroPublicId).send({
     type: 'broadcast',
     event: EVENT.cardUpdated,

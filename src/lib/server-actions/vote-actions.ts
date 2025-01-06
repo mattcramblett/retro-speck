@@ -5,9 +5,13 @@ import {
   createVote as insertVote,
   deleteVote,
   getParticipantVotes,
+  getVote,
 } from "../repositories/vote-repository";
 import { getUserOrThrow } from "./authN-actions";
 import { getParticipantInRetro } from "../repositories/participant-repository";
+import { createServerActionClient } from "@supabase/auth-helpers-nextjs";
+import { EVENT } from "@/types/event";
+import { cookies } from "next/headers";
 
 export async function getVotes(retroId: number) {
   await assertAccess(retroId);
@@ -31,20 +35,25 @@ export async function createVote(topicId: number) {
     participantId: participant.id,
     retroId: participant.retroId,
   });
+  const supabase = createServerActionClient({ cookies });
+  await supabase.channel(retroPublicId).send({
+    type: "broadcast",
+    event: EVENT.voteAdded,
+    payload: { voteId: vote.id, topicId, participantId: participant.id },
+  });
   return vote;
 }
 
-export async function removeVote(topicId: number) {
-  const retroPublicId = await assertAccessToTopic(topicId);
-  const user = await getUserOrThrow();
-  const participant = await getParticipantInRetro({
-    retroPublicId,
-    userId: user.id,
-  });
+export async function removeVote(voteId: number) {
+  const vote = await getVote(voteId);
+  const retroPublicId = await assertAccess(vote.retroId);
 
-  await deleteVote({
-    topicId,
-    participantId: participant.id,
-    retroId: participant.retroId,
+  await deleteVote(voteId);
+
+  const supabase = createServerActionClient({ cookies });
+  await supabase.channel(retroPublicId).send({
+    type: "broadcast",
+    event: EVENT.voteRemoved,
+    payload: { voteId },
   });
 }
