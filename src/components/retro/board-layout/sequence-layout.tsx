@@ -18,7 +18,13 @@ export function SequenceLayout({
 }) {
   const retroId = initialRetro.id;
   const { data: retro } = useRetro(retroId);
-  const { data: topic, isPending } = useTopic(retroId, retro?.currentTopicId || 0);
+  const { data: topic, isPending } = useTopic(
+    retroId,
+    retro?.currentTopicId || 0,
+    {
+      enabled: !!retro?.currentTopicId,
+    },
+  );
 
   return (
     <div className="flex w-full items-center justify-center">

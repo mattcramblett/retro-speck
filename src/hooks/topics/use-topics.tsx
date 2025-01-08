@@ -21,9 +21,10 @@ export const useTopics = (
   });
 };
 
-export const useTopic = (retroId: number, topicId: number) => {
+export const useTopic = (retroId: number, topicId: number, options?: Partial<ReturnType<typeof topicsQuery>>) => {
   return useQuery({
     ...topicsQuery(retroId),
+    ...(options || {}),
     select: (topics) => topics.find((t) => t.id === topicId),
   });
 };
