@@ -7,7 +7,7 @@ export function VoteBubbles({
   votes,
   onCreate,
   onRemove,
-  showCreate,
+  isActiveVoting,
   createEnabled,
   removeEnabled,
 }: {
@@ -15,7 +15,7 @@ export function VoteBubbles({
   votes: Vote[];
   onCreate: () => void;
   onRemove: (voteId: number) => void;
-  showCreate?: boolean;
+  isActiveVoting?: boolean;
   createEnabled?: boolean;
   removeEnabled?: boolean;
 }) {
@@ -27,12 +27,12 @@ export function VoteBubbles({
           key={v.id}
           variant="icon"
           size="bare"
-          className="rounded-full w-4 h-4 bg-primary hover:bg-primary/60 transition-all"
+          className="rounded-full w-4 h-4 bg-primary disabled:opacity-100 hover:bg-primary/60 transition-all"
           onClick={() => onRemove(v.id)}
-          disabled={!removeEnabled}
+          disabled={!removeEnabled || !isActiveVoting}
         />
       ))}
-      {showCreate && (
+      {isActiveVoting && (
         <Button
           variant="icon"
           size="bare"

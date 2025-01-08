@@ -59,7 +59,7 @@ export function TopicVotes({
       <VoteBubbles
         votes={votes || []}
         label={label}
-        showCreate={phase.name === "voting"}
+        isActiveVoting={phase.name === "voting"}
         onCreate={() => createVote(topicId)}
         onRemove={(voteId: number) => removeVote(voteId)}
         createEnabled={!isPendingCreateVote && !isPendingRemoveVote && !votesExceeded}

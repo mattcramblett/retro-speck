@@ -5,13 +5,13 @@ export function RetroColumn({
   children,
   showLabel,
 }: {
-  name: string;
+  name?: string;
   children: ReactNode;
-  showLabel: boolean;
+  showLabel?: boolean;
 }) {
   return (
     <div className="flex flex-col items-center gap-4">
-      {showLabel && (
+      {name && showLabel && (
         <div className="flex min-h-8 w-full items-start px-2 overflow-x-scroll">
           <h2 className="font-black text-xl">{name}</h2>
         </div>

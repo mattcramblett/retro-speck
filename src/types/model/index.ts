@@ -6,7 +6,7 @@ import {
   topicsInRetroSpeck,
   votesInRetroSpeck,
 } from "@/db/schema";
-import { handleGroupingPhase, handleVotingPhase } from "@/lib/services/phase-state-service";
+import { handleDiscussionPhase, handleGroupingPhase, handleVotingPhase } from "@/lib/services/phase-state-service";
 
 export type Retro = typeof retrosInRetroSpeck.$inferSelect;
 export type Participant = typeof participantsInRetroSpeck.$inferSelect;
@@ -87,6 +87,7 @@ export const phases: Record<PhaseName, Phase> = {
     usesTopics: true,
     showsVotes: true,
     layoutType: "sequence",
+    stateFunction: handleDiscussionPhase,
   },
   complete: {
     name: "complete",

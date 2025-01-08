@@ -32,7 +32,7 @@ export function RetroBoard({
       title,
       description: "Please refresh the page and try again.",
     });
-  }
+  };
 
   return (
     <>

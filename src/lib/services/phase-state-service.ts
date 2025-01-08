@@ -16,6 +16,7 @@ import {
   retroColumnsInRetroSpeck as columnTable,
   topicsInRetroSpeck as topicTable,
   participantsInRetroSpeck as participantTable,
+  votesInRetroSpeck as voteTable,
 } from "@/db/schema";
 import { Card } from "@/types/model";
 
@@ -89,4 +90,23 @@ export async function handleVotingPhase(retroId: number) {
         ),
       );
   });
+}
+
+export async function handleDiscussionPhase(retroId: number) {
+  const results = await db
+    .select({ topicId: topicTable.id, voteCount: count(voteTable.id) })
+    .from(topicTable)
+    .leftJoin(
+      voteTable,
+      and(eq(voteTable.topicId, topicTable.id), eq(voteTable.retroId, retroId)),
+    )
+    .groupBy(topicTable.id)
+    .orderBy(desc(count(voteTable.id)));
+  if (!results.length) return;
+
+  const { topicId } = results[0];
+  await db
+    .update(retroTable)
+    .set({ currentTopicId: topicId })
+    .where(eq(retroTable.id, retroId));
 }
