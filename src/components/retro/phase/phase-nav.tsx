@@ -30,7 +30,7 @@ export function PhaseNav({
   const isFacilitator = participant?.userId === retro?.facilitatorUserId;
 
   return (
-    <div className="flex justify-center w-full items-center bg-gradient">
+    <div className="z-10 flex justify-center w-full items-center bg-gradient">
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>

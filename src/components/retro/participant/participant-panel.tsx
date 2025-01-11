@@ -35,7 +35,7 @@ export function ParticipantPanel({
 
   if (!isExpanded) {
     return (
-      <div className="flex flex-col h-full bg-card max-w-12 overflow-x-scroll tiny-scrollbar px-4 py-4 animate-in animate-out">
+      <div className="z-10 flex flex-col h-full bg-card max-w-12 overflow-x-scroll tiny-scrollbar px-4 py-4 animate-in animate-out">
         <Button variant="icon" size="bare" onClick={() => setIsExpanded(true)}>
           <PanelLeft className="text-muted-foreground" size={12} />
         </Button>
@@ -44,7 +44,7 @@ export function ParticipantPanel({
   }
 
   return (
-    <div className="flex flex-col h-full bg-card min-w-60 xl:min-w-80 overflow-x-scroll tiny-scrollbar px-4 py-4 animate-in animate-out">
+    <div className="z-10 flex flex-col h-full bg-card min-w-60 xl:min-w-80 overflow-x-scroll tiny-scrollbar px-4 py-4 animate-in animate-out">
       <div className="w-full flex items-center gap-2 mb-2">
         <Button variant="icon" size="bare" onClick={() => setIsExpanded(false)}>
           <Minimize2 className="text-muted-foreground" size={12} />

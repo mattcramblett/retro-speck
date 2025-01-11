@@ -24,7 +24,8 @@ export function SequenceLayout({
 }) {
   const retroId = initialRetro.id;
   const { data: retro } = useRetro(retroId);
-  const { mutate: updateTopic, isPending: isPendingUpdate } = useUpdateTopic(retroId);
+  const { mutate: updateTopic, isPending: isPendingUpdate } =
+    useUpdateTopic(retroId);
 
   // Pass these initial data for initial page loads
   useColumns(retroId, { initialData: initialColumns });
@@ -79,6 +80,9 @@ export function SequenceLayout({
         {!isPending && (
           <RetroColumn>
             <RetroTopic retroId={retroId} topicId={topic?.id || 0} />
+            <div className="text-muted-foreground">
+              {`${getTopicIndex(retro?.currentTopicId || 0)} of ${sortedTopics.length} topics complete`}
+            </div>
           </RetroColumn>
         )}
         {isFacilitator && (
