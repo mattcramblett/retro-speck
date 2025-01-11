@@ -69,7 +69,7 @@ export function SequenceLayout({
     getTopicIndex(retro?.currentTopicId || 0) < sortedTopics.length - 1;
 
   return (
-    <div className="flex w-full items-center justify-center">
+    <div className="flex w-full items-center justify-center overflow-scroll px-8">
       <div className="flex items-center gap-4">
         {isFacilitator && (
           <Button disabled={!reverseEnabled} onClick={handleReverse}>
