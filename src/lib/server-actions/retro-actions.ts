@@ -46,3 +46,16 @@ export async function advancePhase(retroId: number): Promise<Retro> {
   });
   return updatedRetro;
 }
+
+export async function updateTopic(retroId: number, topicId: number): Promise<number> {
+  const retroPublicId = await assertAccess(retroId, true); // Must be facilitator
+  await updateRetro({ id: retroId, currentTopicId: topicId });
+  const supabase = createServerActionClient({ cookies });
+  await supabase.channel(retroPublicId).send({
+    type: "broadcast",
+    event: EVENT.retroTopicUpdated,
+    payload: { currentTopicId: topicId },
+  });
+  return topicId;
+}
+

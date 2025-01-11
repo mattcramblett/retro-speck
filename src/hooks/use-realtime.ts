@@ -3,7 +3,7 @@ import { useRef } from "react";
 import { makeBroadcastClient } from "@/clients/broadcast-client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRetroCards } from "@/hooks/cards/use-retro-cards";
-import { retroQuery } from "./retros/use-retro";
+import { retroQuery, useUpdateCurrentTopic } from "./retros/use-retro";
 import { EVENT } from "@/types/event";
 import { PhaseName } from "@/types/model";
 import { useRefreshTopic } from "./topics/use-topics";
@@ -25,6 +25,7 @@ export function useRealtime({
   const { mutate: refreshParticipant } = useRefreshParticipant(retroId);
   const { sync: syncNewVote } = useSyncNewVote(retroId);
   const { sync: syncRemovedVote } = useSyncRemovedVote(retroId);
+  const { updateCurrentTopic } = useUpdateCurrentTopic(retroId);
 
   const client = useRef(makeBroadcastClient());
   const queryClient = useQueryClient();
@@ -78,6 +79,10 @@ export function useRealtime({
         .on("broadcast", { event: EVENT.voteRemoved }, async (event) => {
           const { voteId } = event.payload || {};
           syncRemovedVote({ voteId });
+        })
+        .on("broadcast", { event: EVENT.retroTopicUpdated }, async (event) => {
+          const { currentTopicId } = event.payload || {};
+          updateCurrentTopic(currentTopicId);
         })
         .subscribe();
       console.log("Connected to the retro board.");
