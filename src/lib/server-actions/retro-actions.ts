@@ -20,6 +20,7 @@ export async function getRetro(retroId: number): Promise<Retro> {
 export async function createRetro(name: string): Promise<string> {
   // TODO: AuthZ check is just an authenticated user. There should be probably be some form of rate limiting here.
   const user = await getUserOrThrow();
+  console.log(`user ${user.id} is creating a new retro`);
   return await insertRetro({
     name: name.replaceAll(/<|>/g, ""),
     userId: user.id,
