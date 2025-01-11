@@ -1,6 +1,6 @@
 import { Title } from "@/components/brand/title";
 import { useAdvancePhase, useRetro } from "@/hooks/retros/use-retro";
-import { getPhase } from "@/types/model";
+import { getPhase, phases } from "@/types/model";
 import {
   Tooltip,
   TooltipContent,
@@ -25,12 +25,14 @@ export function PhaseNav({
     onError: () => onError("Unable to progress"),
   });
 
+  const isLast = phase.index >= Object.keys(phases).length - 1;
+
   const { data: participant } = useCurrentParticipant(retroId);
 
   const isFacilitator = participant?.userId === retro?.facilitatorUserId;
 
   return (
-    <div className="z-10 flex justify-center w-full items-center bg-gradient">
+    <div className="z-40 flex justify-center w-full items-center bg-gradient">
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
@@ -46,7 +48,7 @@ export function PhaseNav({
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
-      {isFacilitator && (
+      {isFacilitator && !isLast && (
         <Button
           variant="link"
           className="px-1"

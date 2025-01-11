@@ -1,3 +1,4 @@
+import { Title } from "@/components/brand/title";
 import { Card, Column, Participant, Retro } from "@/types/model";
 
 export function SummaryLayout({
@@ -11,5 +12,12 @@ export function SummaryLayout({
   initialCards: Card[];
   initialParticipants: Participant[];
 }) {
-  return <div>TODO: summary layout</div>;
+  return (
+    <div className="flex items-center justify-center size-full">
+      <div className="flex flex-col items-center">
+        <Title className="text-4xl">This retro is complete.</Title>
+        <div className="text-xl font-bold">Thank you for participating!</div>
+      </div>
+    </div>
+  );
 }
