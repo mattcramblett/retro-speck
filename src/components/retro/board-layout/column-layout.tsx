@@ -47,6 +47,7 @@ export function ColumnLayout({
           key={column.id}
           name={column.name}
           showLabel={phase.isDraftState}
+          fullHeight={phase.name === "setup"}
         >
           {phase.name === "brainstorm" && (
             <CreateCardButton

@@ -65,7 +65,7 @@ export async function createRetro({
         facilitatorUserId: userId,
         publicId,
         name,
-        phase: phases.setup.name,
+        phase: phases.brainstorm.name, // TODO: change to `setup` when editing columns is implemented
       })
       .returning();
     const retroId = retro[0].id;
