@@ -24,7 +24,7 @@ export function SequenceLayout({
 }) {
   const retroId = initialRetro.id;
   const { data: retro } = useRetro(retroId);
-  const { mutate: updateTopic, isPendingUpdate } = useUpdateTopic(retroId);
+  const { mutate: updateTopic, isPending: isPendingUpdate } = useUpdateTopic(retroId);
 
   // Pass these initial data for initial page loads
   useColumns(retroId, { initialData: initialColumns });
