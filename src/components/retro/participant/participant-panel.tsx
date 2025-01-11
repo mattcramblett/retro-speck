@@ -10,6 +10,7 @@ import { Minimize2, PanelLeft } from "lucide-react";
 import { useState } from "react";
 import { AdmittedParticipant } from "./admitted-participant";
 import { WaitingParticipant } from "./waiting-participant";
+import { LinkCopy } from "./link-copy";
 
 export function ParticipantPanel({
   retroId,
@@ -75,6 +76,8 @@ export function ParticipantPanel({
             onError={onError}
           />
         ))}
+        <Separator className="my-2" />
+        <LinkCopy />
       </div>
     </div>
   );
