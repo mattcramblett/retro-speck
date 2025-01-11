@@ -1,5 +1,7 @@
-import { pgTable, pgSchema, index, foreignKey, integer, timestamp, varchar, uuid, uniqueIndex, boolean } from "drizzle-orm/pg-core"
-import { sql } from "drizzle-orm"
+// NOTE: ignoring type errors in auto-generated code
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
+import { pgSchema, index, foreignKey, integer, timestamp, varchar, uuid, uniqueIndex, boolean } from "drizzle-orm/pg-core"
 
 export const retroSpeck = pgSchema("retro_speck");
 

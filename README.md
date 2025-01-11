@@ -34,3 +34,14 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Drizzle schema type errors
+
+Drizzle generates the schema and it creates a lot of typing errors, and it's easiest to ignore them. After
+generating the schema with `drizzle pull`, add this to the top of the file:
+
+```
+// NOTE: ignoring type errors in auto-generated code
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
+```

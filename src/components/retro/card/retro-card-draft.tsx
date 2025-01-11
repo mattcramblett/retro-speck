@@ -1,7 +1,7 @@
 "use client";
 import { DynamicTextarea } from "@/components/ui/dynamic-textarea";
 import { useRetroCards } from "@/hooks/cards/use-retro-cards";
-import { useParticipants } from "@/hooks/participants/use-participants";
+import { useCurrentParticipant } from "@/hooks/participants/use-participants";
 import { useToast } from "@/hooks/use-toast";
 import { Card } from "@/types/model";
 import { useState, useEffect } from "react";
@@ -21,8 +21,7 @@ export function RetroCardDraft({
     debounce: true,
   });
 
-  const { useCurrentParticipant } = useParticipants({ retroId });
-  const { data: participant } = useCurrentParticipant();
+  const { data: participant } = useCurrentParticipant(retroId);
 
   // Keep content tracked local to the component for text editing, but update it if the source changes.
   const [content, setContent] = useState(initialCard.content);

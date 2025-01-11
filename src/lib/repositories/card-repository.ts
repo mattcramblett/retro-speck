@@ -85,7 +85,7 @@ export async function createCard(
         eq(columnTable.id, columnId),
       ),
     );
-  const participantId = participantResults[0].id;
+  const participantId = participantResults[0].id as number;
   const result = await db
     .insert(cardTable)
     .values({

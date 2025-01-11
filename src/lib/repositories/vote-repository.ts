@@ -1,7 +1,7 @@
 import { db } from "@/db";
 import { votesInRetroSpeck as voteTable } from "@/db/schema";
 import { Vote } from "@/types/model";
-import { and, eq } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 
 export async function getVotes(retroId: number) {
   return await db

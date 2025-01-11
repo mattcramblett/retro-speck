@@ -2,9 +2,13 @@ import { Title } from "@/components/brand/title";
 import { Card, Column, Participant, Retro } from "@/types/model";
 
 export function SummaryLayout({
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
   initialRetro,
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
   initialColumns,
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
   initialCards,
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
   initialParticipants,
 }: {
   initialRetro: Retro;
