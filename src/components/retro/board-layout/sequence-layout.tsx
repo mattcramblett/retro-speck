@@ -81,7 +81,7 @@ export function SequenceLayout({
           <RetroColumn>
             <RetroTopic retroId={retroId} topicId={topic?.id || 0} />
             <div className="text-muted-foreground">
-              {`${getTopicIndex(retro?.currentTopicId || 0)} of ${sortedTopics.length} topics complete`}
+              {`Topic ${getTopicIndex(retro?.currentTopicId || 0)} of ${sortedTopics.length}`}
             </div>
           </RetroColumn>
         )}
