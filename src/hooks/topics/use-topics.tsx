@@ -96,9 +96,11 @@ export const useVotedTopics = (
       return acc;
     }, {});
     // Sort by vote tally, descending
-    return topics.sort(
-      (topicA, topicB) => (scores[topicB.id] || 0) - (scores[topicA.id] || 0),
-    );
+    return topics
+      .filter((t) => !!t)
+      .sort(
+        (topicA, topicB) => (scores[topicB.id] || 0) - (scores[topicA.id] || 0),
+      );
   }, [topics, votes]);
 
   const getTopicIndex = (topicId: number) =>
