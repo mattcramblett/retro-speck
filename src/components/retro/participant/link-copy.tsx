@@ -18,7 +18,7 @@ export function LinkCopy() {
   return (
     <div>
       <Button disabled={copied} onClick={onClick} variant="link" size="bare">
-        { copied ? <CheckCircle /> : <Link /> }
+        {copied ? <CheckCircle /> : <Link />}
         {copied ? "Link copied!" : "Copy invite link"}
       </Button>
     </div>
