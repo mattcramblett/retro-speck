@@ -35,6 +35,12 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
+## Docker
+Build the image with tag `retrospeck` and run it. `--rm` will destroy the container when it's done running.
+```zsh
+docker build -t retrospeck . && docker run -d --rm -it retrospeck
+```
+
 ## Drizzle schema type errors
 
 Drizzle generates the schema and it creates a lot of typing errors, and it's easiest to ignore them. After

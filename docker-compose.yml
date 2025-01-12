@@ -1,0 +1,15 @@
+version: "3.7"
+
+services:
+  retro-speck-nextjs:
+    build:
+      context: .
+      dockerfile: Dockerfile.nextjs
+    container_name: retro-speck-nextjs
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env.local
+
+volumes:
+  node_modules:
