@@ -21,6 +21,9 @@ services:
     container_name: retro-speck-nextjs
     labels:
       - "traefik.http.routers.retro-speck-nextjs.rule=Host(`retrospeck.com`)"
+    deploy:
+      mode: replicated
+      replicas: 3
     env_file:
       - .env.local
 
