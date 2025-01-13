@@ -25,7 +25,7 @@ services:
       - letsencrypt:/letsencrypt
       # So that Traefik can listen to Docker events
       - /var/run/docker.sock:/var/run/docker.sock
-  retro-speck-nextjs:
+  nextjs:
     build:
       context: .
       dockerfile: Dockerfile.nextjs
