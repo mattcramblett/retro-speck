@@ -36,9 +36,11 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
 
 ## Docker
-Build the image with tag `retrospeck` and run it. `--rm` will destroy the container when it's done running.
+Build and push the image with a prod tag. Watchtower will pick this up automatically for deploy.
+Image is registered at hub.docker.com, `docker.io/mcramblett/retrospeck`
 ```zsh
-docker build -t retrospeck . && docker run -d --rm -it retrospeck
+docker compose build
+docker push mcramblett/retrospeck:prod
 ```
 
 ## Drizzle schema type errors
