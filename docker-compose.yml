@@ -8,9 +8,9 @@ services:
       - "--providers.docker.exposedbydefault=false"
       # HTTPS
       - "--entryPoints.websecure.address=:443"
-      - "--certificateresolvers.myresolver.acme.tlschallenge=true"
-      - "--certificateresolvers.myresolver.acme.email=cramblett42@gmail.com"
-      - "--certificateresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.email=cramblett42@gmail.com"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
       # Redirect HTTP request (port 80) to HTTPS (port 443)
       - "--entryPoints.web.address=:80"
       - "--entryPoints.web.http.redirections.entrypoint.to=websecure"
