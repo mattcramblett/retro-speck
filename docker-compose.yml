@@ -1,13 +1,26 @@
 version: "3.7"
 
 services:
+  reverse-proxy:
+    image: traefik:v3.2
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker"
+    ports:
+      # All requests
+      - "80:80"
+      # Traefik web UI (enabled by --api.insecure=true)
+      - "8080:8080"
+    volumes:
+      # So that Traefik can listen to Docker events
+      - /var/run/docker.sock:/var/run/docker.sock
   retro-speck-nextjs:
     build:
       context: .
       dockerfile: Dockerfile.nextjs
     container_name: retro-speck-nextjs
-    ports:
-      - "3000:3000"
+    labels:
+      - "traefik.http.routers.retro-speck-nextjs.rule=Host(`retrospeck.com`)"
     env_file:
       - .env.local
 
