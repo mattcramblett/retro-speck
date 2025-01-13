@@ -1,6 +1,6 @@
 services:
   watchtower:
-    image: containerrr/watchtower
+    image: containrrr/watchtower
     command:
       - "--label-enable"
       - "--interval"
