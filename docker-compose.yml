@@ -6,12 +6,25 @@ services:
     command:
       - "--api.insecure=true"
       - "--providers.docker"
+      # Only expose services with an explicit label added to it
+      - "--providers.docker.exposedbydefault=false"
+      # HTTPS
+      - "--entryPoints.websecure.address=:443"
+      - "--certificateresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificateresolvers.myresolver.acme.email=cramblett42@gmail.com"
+      - "--certificateresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+      # Redirect HTTP request (port 80) to HTTPS (port 443)
+      - "--entryPoints.web.address=:80"
+      - "--entryPoints.web.http.redirections.entrypoint.to=websecure"
+      - "--entryPoints.web.http.redirections.entrypoint.scheme=https"
     ports:
       # All requests
       - "80:80"
+      - "443:443"
       # Traefik web UI (enabled by --api.insecure=true)
       - "8080:8080"
     volumes:
+      - letsencrypt:/letsencrypt
       # So that Traefik can listen to Docker events
       - /var/run/docker.sock:/var/run/docker.sock
   retro-speck-nextjs:
@@ -20,7 +33,10 @@ services:
       dockerfile: Dockerfile.nextjs
     container_name: retro-speck-nextjs
     labels:
+      - "traefik.enable=true"
       - "traefik.http.routers.retro-speck-nextjs.rule=Host(`retrospeck.com`)"
+      - "traefik.http.routers.retro-speck-nextjs.entrypoints=websecure"
+      - "traefik.http.routers.retro-speck-nextjs.tls.certresolver=myresolver"
     deploy:
       mode: replicated
       replicas: 3
@@ -29,3 +45,4 @@ services:
 
 volumes:
   node_modules:
+  letsencrypt:
