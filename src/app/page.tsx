@@ -11,7 +11,7 @@ export default async function Home() {
     <main className="size-full flex items-center justify-center">
       <div className="container">
         <Title className="text-2xl sm:text-4xl md:text-6xl lg:text-8xl p-2 md:p-4 whitespace-normal">
-          Team Restrospectives done better.
+          Quick and easy team restrospectives.
         </Title>
         {user && <CreateRetroForm />}
         {!user && (
