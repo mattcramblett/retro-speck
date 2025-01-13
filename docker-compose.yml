@@ -1,5 +1,3 @@
-version: "3.7"
-
 services:
   reverse-proxy:
     image: traefik:v3.2
@@ -31,7 +29,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.nextjs
-    container_name: retro-speck-nextjs
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.retro-speck-nextjs.rule=Host(`retrospeck.com`)"
