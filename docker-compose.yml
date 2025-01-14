@@ -50,7 +50,7 @@ services:
       mode: replicated
       replicas: 3
     env_file:
-      - .env.local
+      - ../env/retrospeck.env
 
 volumes:
   node_modules:
