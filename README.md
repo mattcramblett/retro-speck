@@ -39,7 +39,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
 Build  for linux/amd63 and push the image with a prod tag. Watchtower will pick this up automatically for deploy to the `prod` tag.
 Image is registered on docker hub, `mcramblett/retrospeck`
 ```zsh
-docker buildx build --platform linux/amd64 -t mcramblett/retrospeck:prod --push .
+docker buildx build --platform linux/amd64 -f Dockerfile.nextjs -t mcramblett/retrospeck:prod --push .
 ```
 
 ## Drizzle schema type errors
