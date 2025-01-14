@@ -22,7 +22,7 @@ export function RetroCardDraft({
   });
 
   const { data: participant } = useCurrentParticipant(retroId);
-
+  
   // Keep content tracked local to the component for text editing, but update it if the source changes.
   const [content, setContent] = useState(initialCard.content);
   useEffect(() => setContent(card?.content || ""), [card?.content]);
