@@ -9,6 +9,8 @@ import { getCards } from "@/lib/repositories/card-repository";
 import { getUserOrThrow } from "@/lib/server-actions/authN-actions";
 import { RetroBoard } from "@/components/retro/retro-board";
 import { WaitingRoom } from "@/components/waiting-room/waiting-room";
+import { withRetry } from "@/lib/utils";
+import { User } from "@supabase/auth-helpers-nextjs";
 
 export default async function RetroBoardPage({
   params,
@@ -16,7 +18,7 @@ export default async function RetroBoardPage({
   params: Promise<{ publicId: string }>;
 }) {
   const { publicId } = await params;
-  const user = await getUserOrThrow(); // Middleware should assert the user exists.
+  const user = await withRetry<User>(() => getUserOrThrow());
 
   const retro = await getRetroByPublicId(publicId);
   const currentParticipant = await ensureParticipant({
