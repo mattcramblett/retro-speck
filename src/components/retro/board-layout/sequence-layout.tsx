@@ -1,4 +1,4 @@
-import { useRetro, useUpdateTopic } from "@/hooks/retros/use-retro";
+import { useAdvancePhase, useRetro, useUpdateTopic } from "@/hooks/retros/use-retro";
 import { useTopic, useVotedTopics } from "@/hooks/topics/use-topics";
 import { Card, Column, Participant, Retro } from "@/types/model";
 import { RetroTopic } from "../topic/retro-topic";
@@ -33,6 +33,7 @@ export function SequenceLayout({
   useParticipants(retroId, { initialData: initialParticipants });
 
   const { data: sortedTopics, getTopicIndex } = useVotedTopics(retroId);
+  const { mutate: advancePhase } =useAdvancePhase(retroId);
 
   const { data: topic, isPending } = useTopic(
     retroId,
@@ -46,7 +47,12 @@ export function SequenceLayout({
 
   const handleAdvance = () => {
     if (retro?.currentTopicId) {
-      updateTopic(sortedTopics[getTopicIndex(retro?.currentTopicId) + 1].id);
+      const currentIndex = getTopicIndex(retro?.currentTopicId);
+      if (currentIndex === sortedTopics.length - 1) {
+        advancePhase();
+      } else {
+        updateTopic(sortedTopics[currentIndex + 1].id);
+      }
     }
   };
 
@@ -62,12 +68,6 @@ export function SequenceLayout({
     retro?.currentTopicId &&
     getTopicIndex(retro?.currentTopicId || 0) > 0;
 
-  const advanceEnabled =
-    isFacilitator &&
-    !isPendingUpdate &&
-    retro?.currentTopicId &&
-    getTopicIndex(retro?.currentTopicId || 0) < sortedTopics.length - 1;
-
   return (
     <div className="flex w-full items-center justify-center overflow-scroll px-8">
       <div className="flex items-center gap-4">
@@ -81,12 +81,12 @@ export function SequenceLayout({
           <RetroColumn>
             <RetroTopic retroId={retroId} topicId={topic?.id || 0} />
             <div className="text-muted-foreground">
-              {`Topic ${getTopicIndex(retro?.currentTopicId || 0)} of ${sortedTopics.length}`}
+              {`Topic ${getTopicIndex(retro?.currentTopicId || 0) + 1} of ${sortedTopics.length}`}
             </div>
           </RetroColumn>
         )}
         {isFacilitator && (
-          <Button disabled={!advanceEnabled} onClick={handleAdvance}>
+          <Button onClick={handleAdvance}>
             <MoveRight />
           </Button>
         )}
