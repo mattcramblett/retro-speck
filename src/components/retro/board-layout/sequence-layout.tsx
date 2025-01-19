@@ -1,4 +1,8 @@
-import { useAdvancePhase, useRetro, useUpdateTopic } from "@/hooks/retros/use-retro";
+import {
+  useAdvancePhase,
+  useRetro,
+  useUpdateTopic,
+} from "@/hooks/retros/use-retro";
 import { useTopic, useVotedTopics } from "@/hooks/topics/use-topics";
 import { Card, Column, Participant, Retro } from "@/types/model";
 import { RetroTopic } from "../topic/retro-topic";
@@ -33,7 +37,7 @@ export function SequenceLayout({
   useParticipants(retroId, { initialData: initialParticipants });
 
   const { data: sortedTopics, getTopicIndex } = useVotedTopics(retroId);
-  const { mutate: advancePhase } =useAdvancePhase(retroId);
+  const { mutate: advancePhase } = useAdvancePhase(retroId);
 
   const { data: topic, isPending } = useTopic(
     retroId,
@@ -69,16 +73,18 @@ export function SequenceLayout({
     getTopicIndex(retro?.currentTopicId || 0) > 0;
 
   return (
-    <div className="flex w-full items-center justify-center overflow-scroll tiny-scrollbar px-8">
-      <div className="flex items-center gap-4">
+    <div className="flex size-full items-center justify-center px-8">
+      <div className="flex gap-4 h-full items-center">
         {isFacilitator && (
-          <Button disabled={!reverseEnabled} onClick={handleReverse}>
-            <MoveLeft />
-          </Button>
+          <div className="h-full flex items-center">
+            <Button disabled={!reverseEnabled} onClick={handleReverse}>
+              <MoveLeft />
+            </Button>
+          </div>
         )}
         {isPending && <Skeleton className="rounded-xl w-full h-48" />}
         {!isPending && (
-          <RetroColumn>
+          <RetroColumn className="py-4">
             <RetroTopic retroId={retroId} topicId={topic?.id || 0} />
             <div className="text-muted-foreground">
               {`Topic ${getTopicIndex(retro?.currentTopicId || 0) + 1} of ${sortedTopics.length}`}
@@ -86,9 +92,11 @@ export function SequenceLayout({
           </RetroColumn>
         )}
         {isFacilitator && (
-          <Button onClick={handleAdvance}>
-            <MoveRight />
-          </Button>
+          <div className="h-full flex items-center">
+            <Button onClick={handleAdvance}>
+              <MoveRight />
+            </Button>
+          </div>
         )}
       </div>
     </div>
