@@ -28,7 +28,7 @@ export async function handleGroupingPhase(retroId: number) {
       .fullJoin(columnTable, eq(columnTable.id, cardTable.retroColumnId))
       .where(eq(columnTable.retroId, retroId))
       .orderBy(desc(cardTable.createdAt))
-  ).map((c) => c.cards) as Card[];
+  ).map((c) => c.cards).filter((c) => !!c) as Card[];
 
   // Create topic for each card in the retro
   await db.transaction(async (tx) => {
