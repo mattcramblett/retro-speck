@@ -35,7 +35,7 @@ export function WaitingParticipant({
           title={`Admit ${participant.name}`}
           disabled={isPending}
         >
-          <UserRoundCheck className="text-muted-foreground" size={12} />
+          <UserRoundCheck className="text-primary" size={12} />
         </Button>
       )}
       {!isFacilitator && (
