@@ -19,7 +19,7 @@ export function RetroColumn({
           <h2 className="font-black text-xl">{name}</h2>
         </div>
       )}
-      <div className={cn("flex flex-col max-h-full overflow-y-scroll tiny-scrollbar bg-card items-center gap-4 py-4 px-3 border border-primary/10 rounded-lg min-w-80 max-w-80", fullHeight ? "h-full" : null)}>
+      <div className={cn("flex flex-col mb-8 overflow-y-scroll tiny-scrollbar bg-card items-center gap-4 py-4 px-3 border border-primary/10 rounded-lg min-w-80 max-w-80", fullHeight ? "h-full" : null)}>
         {children}
       </div>
     </div>
