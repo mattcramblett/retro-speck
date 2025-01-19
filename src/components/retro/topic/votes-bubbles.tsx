@@ -22,16 +22,6 @@ export function VoteBubbles({
   return (
     <div className="flex items-center flex-wrap gap-1.5">
       <div className="text-sm text-muted-foreground">{label}</div>
-      {votes.map((v) => (
-        <Button
-          key={v.id}
-          variant="icon"
-          size="bare"
-          className="rounded-full w-4 h-4 bg-primary disabled:opacity-100 hover:bg-primary/60 transition-all"
-          onClick={() => onRemove(v.id)}
-          disabled={!removeEnabled || !isActiveVoting}
-        />
-      ))}
       {isActiveVoting && (
         <Button
           variant="icon"
@@ -42,6 +32,16 @@ export function VoteBubbles({
           <PlusCircle className="text-card-foreground" />
         </Button>
       )}
+      {votes.map((v) => (
+        <Button
+          key={v.id}
+          variant="icon"
+          size="bare"
+          className="rounded-full w-4 h-4 bg-primary disabled:opacity-100 hover:bg-primary/60 transition-all"
+          onClick={() => onRemove(v.id)}
+          disabled={!removeEnabled || !isActiveVoting}
+        />
+      ))}
     </div>
   );
 }
