@@ -3,11 +3,18 @@ import { useRef } from "react";
 import { makeBroadcastClient } from "@/clients/broadcast-client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRetroCards } from "@/hooks/cards/use-retro-cards";
-import { retroQuery, useUpdateCurrentTopic } from "./retros/use-retro";
+import {
+  retroQuery,
+  useRetro,
+  useUpdateCurrentTopic,
+} from "./retros/use-retro";
 import { EVENT } from "@/types/event";
-import { PhaseName } from "@/types/model";
+import { getPhase, PhaseName } from "@/types/model";
 import { useRefreshTopic } from "./topics/use-topics";
-import { useRefreshParticipant } from "./participants/use-participants";
+import {
+  useCurrentParticipant,
+  useRefreshParticipant,
+} from "./participants/use-participants";
 import { useSyncNewVote, useSyncRemovedVote } from "./votes/use-votes";
 
 export function useRealtime({
@@ -19,6 +26,9 @@ export function useRealtime({
   retroId: number;
   onNewPhase?: (phase: PhaseName) => void;
 }) {
+  const { data: currentParticipant } = useCurrentParticipant(retroId);
+  const { data: retro } = useRetro(retroId);
+  const phase = getPhase(retro?.phase);
   const { useRefreshCard } = useRetroCards({ retroId });
   const { mutate: refreshCard } = useRefreshCard();
   const { mutate: refreshTopic } = useRefreshTopic(retroId);
@@ -41,8 +51,11 @@ export function useRealtime({
       });
       channel
         .on("broadcast", { event: EVENT.cardUpdated }, async (event) => {
-          const cardId = event.payload?.cardId;
-          if (!cardId) return;
+          const { cardId, participantId } = event.payload?.cardId || {};
+          // Do not interrupt someone typing into their own card
+          const skipSelfUpdate =
+            phase.isDraftState && participantId === currentParticipant?.id;
+          if (!cardId || skipSelfUpdate) return;
 
           refreshCard(cardId);
         })

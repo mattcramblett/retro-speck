@@ -1,6 +1,11 @@
 "use server";
 import { Card } from "@/types/model";
-import { getCard as findCard, getCards as fetchCards, updateCard as persistCard, createCard as insertCard } from "../repositories/card-repository";
+import {
+  getCard as findCard,
+  getCards as fetchCards,
+  updateCard as persistCard,
+  createCard as insertCard,
+} from "../repositories/card-repository";
 import { assertAccess, assertAccessToCard } from "./authZ-action";
 import { getUserOrThrow } from "./authN-actions";
 import { createServerActionClient } from "@supabase/auth-helpers-nextjs";
@@ -29,14 +34,13 @@ export async function updateCard(card: Partial<Card>): Promise<Card> {
   card.content = card.content?.replaceAll(/<|>/g, "");
   if (!cardId) throw "Must set cardId for update";
   const retroPublicId = await assertAccessToCard(cardId);
-  const updatedCard = await persistCard(card); 
-  
-  const supabase = createServerActionClient({ cookies })
+  const updatedCard = await persistCard(card);
+
+  const supabase = createServerActionClient({ cookies });
   await supabase.channel(retroPublicId).send({
-    type: 'broadcast',
+    type: "broadcast",
     event: EVENT.cardUpdated,
-    payload: { cardId: card.id },
+    payload: { cardId: card.id, participantId: card.participantId },
   });
   return updatedCard;
 }
-
