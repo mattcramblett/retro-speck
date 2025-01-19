@@ -41,7 +41,7 @@ services:
       dockerfile: Dockerfile.nextjs
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.retro-speck-nextjs.rule=Host(`retrospeck.com`)"
+      - "traefik.http.routers.retro-speck-nextjs.rule=HostRegexp(`.*\\.?retrospeck\\.com`)"
       - "traefik.http.routers.retro-speck-nextjs.entrypoints=websecure"
       - "traefik.http.routers.retro-speck-nextjs.tls.certresolver=myresolver"
       # Enable Watchtower to monitor for updates:
