@@ -46,13 +46,15 @@ export function ParticipantPanel({
 
   return (
     <div className="z-10 flex flex-col h-full bg-card min-w-60 xl:min-w-80 overflow-x-scroll tiny-scrollbar px-4 py-4 animate-in animate-out">
-      <div className="w-full flex items-center gap-2 mb-2">
+      <div className="w-full flex items-center gap-2 mb-4">
         <Button variant="icon" size="bare" onClick={() => setIsExpanded(false)}>
-          <Minimize2 className="text-muted-foreground" size={12} />
+          <Minimize2 className="text-muted-foreground" size={14} />
         </Button>
-        <h2 className="font-bold text-md">Participants</h2>
+        <h2 className="font-black text-xl text-foreground">{retro?.name}</h2>
       </div>
-      <Separator className="mb-3" />
+      <LinkCopy />
+      <Separator className="my-3" />
+      <h2 className="font-bold text-md pt-4 pb-2">Participants</h2>
       <div className="size-full flex flex-col gap-2">
         {admitted.map((p) => (
           <AdmittedParticipant
@@ -76,8 +78,6 @@ export function ParticipantPanel({
             onError={onError}
           />
         ))}
-        <Separator className="my-2" />
-        <LinkCopy />
       </div>
     </div>
   );
