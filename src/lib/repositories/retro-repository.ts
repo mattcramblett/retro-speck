@@ -5,7 +5,7 @@ import {
   retrosInRetroSpeck as retroTable,
 } from "@/db/schema";
 import { uuidv4 } from "../utils";
-import { eq } from "drizzle-orm";
+import { eq, gte, sql, and, count } from "drizzle-orm";
 import { phases, Retro } from "@/types/model";
 
 export async function getRetro(retroId: number): Promise<Retro> {
@@ -43,6 +43,21 @@ export async function getRetroByPublicId(publicId: string): Promise<Retro> {
   const retro = results[0];
   if (!retro) throw "Not found";
   return retro as Retro;
+}
+
+// Return a retro that this user created in the last hour.
+export async function userHasRecentRetro(userId: string): Promise<boolean> {
+  const results = await db
+    .select({ value: count(retroTable.id) })
+    .from(retroTable)
+    .where(
+      and(
+        eq(retroTable.facilitatorUserId, userId),
+        gte(retroTable.createdAt, sql`Now() - INTERVAL '1 hour'`),
+      ),
+    )
+    .limit(1);
+  return results[0].value > 0;
 }
 
 export async function createRetro({

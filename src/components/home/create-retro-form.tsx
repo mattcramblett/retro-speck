@@ -16,6 +16,7 @@ import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { useCreateRetro } from "@/hooks/retros/use-create-retro";
+import { RATE_LIMIT_ERROR } from "@/lib/errors/retro-errors";
 
 const formSchema = z.object({
   title: z.string().min(3).max(80).trim(),
@@ -36,12 +37,15 @@ export function CreateRetroForm() {
     onSuccess: (data) => {
       router.push(`/retro/${data}`);
     },
-    onError: () =>
+    onError: (e: Error) => {
+      const isRateLimitError = e.message === RATE_LIMIT_ERROR;
+      const description = isRateLimitError ? e.message :  "Please refresh the page or try again later.";
       toast({
-        variant: "destructive",
+        variant: isRateLimitError ? "default" : "destructive",
         title: "Could not create a retro.",
-        description: "Please refresh the page or try again later.",
-      }),
+        description,
+      });
+    },
   });
 
   const onSubmit = async (values: z.infer<typeof formSchema>) =>

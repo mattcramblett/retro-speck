@@ -4,12 +4,14 @@ import {
   getRetro as queryRetro,
   createRetro as insertRetro,
   updateRetro,
+  userHasRecentRetro,
 } from "../repositories/retro-repository";
 import { assertAccess } from "./authZ-action";
 import { getUserOrThrow } from "./authN-actions";
 import { createServerActionClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { EVENT } from "@/types/event";
+import { RATE_LIMIT_ERROR } from "../errors/retro-errors";
 
 export async function getRetro(retroId: number): Promise<Retro> {
   const retro = await queryRetro(retroId);
@@ -18,9 +20,12 @@ export async function getRetro(retroId: number): Promise<Retro> {
 }
 
 export async function createRetro(name: string): Promise<string> {
-  // TODO: AuthZ check is just an authenticated user. There should be probably be some form of rate limiting here.
   const user = await getUserOrThrow();
   console.log(`user ${user.id} is creating a new retro`);
+  const hasRecentRetro = await userHasRecentRetro(user.id);
+  
+  if (hasRecentRetro) throw RATE_LIMIT_ERROR;
+
   return await insertRetro({
     name: name.replaceAll(/<|>/g, ""),
     userId: user.id,
