@@ -6,7 +6,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-  FormDescription
+  FormDescription,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import {
@@ -30,6 +30,9 @@ import {
   InputOTPSeparator,
 } from "@/components/ui/input-otp";
 import { useRouter } from "next/navigation";
+import { useSendOtp } from "@/hooks/auth/use-user";
+import { useToast } from "@/hooks/use-toast";
+import { DEFAULT_DESC, DEFAULT_TITLE } from "@/lib/errors/retro-errors";
 
 const formSchema = z.object({
   email: z.string().email({
@@ -41,6 +44,17 @@ const formSchema = z.object({
 export function OTPForm() {
   const [isCodeSent, setIsCodeSent] = useState(false);
   const router = useRouter();
+  const { toast } = useToast();
+
+  const { mutate: sendOtp } = useSendOtp({
+    onSuccess: () => setIsCodeSent(true),
+    onError: () =>
+      toast({
+        variant: "destructive",
+        title: DEFAULT_TITLE,
+        description: DEFAULT_DESC,
+      }),
+  });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -54,8 +68,7 @@ export function OTPForm() {
       const forwardPath = await verifyOtp(values.email, values.code || "");
       setTimeout(() => router.push(forwardPath), 800);
     } else {
-      await loginWithOtp(values.email);
-      setIsCodeSent(true);
+      sendOtp(values.email);
     }
   };
 
