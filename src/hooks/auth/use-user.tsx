@@ -1,5 +1,5 @@
 "use client";
-import { queryOptions, useQuery } from "@tanstack/react-query";
+import { MutationOptions, queryOptions, useMutation, useQuery } from "@tanstack/react-query";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 
 export const userQuery = () =>
@@ -10,13 +10,23 @@ export const userQuery = () =>
       const {
         data: { user },
       } = await supabase.auth.getUser();
+      if (!user) throw "unauthenticated";
       return user;
     },
+    retry: 1,
   });
 
 export function useUser(opts?: Partial<ReturnType<typeof userQuery>>) {
   return useQuery({
     ...userQuery(),
+    ...(opts || {}),
+  });
+}
+
+export function useSignOut(opts?: MutationOptions) {
+  return useMutation({
+    mutationKey: ["user", "signout"],
+    mutationFn: () => createClientComponentClient().auth.signOut(),
     ...(opts || {}),
   });
 }

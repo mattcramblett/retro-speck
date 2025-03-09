@@ -27,8 +27,10 @@ export default function RootLayout({
         "min-h-screen font-sans antialiased overflow-y-scroll h-full flex flex-col flex-1",
           geistSans.variable
       )}>
-        <LayoutHeader />
-        <Providers>{children}</Providers>
+        <Providers>
+          <LayoutHeader />
+          {children}
+        </Providers>
         <Toaster />
       </body>
     </html>
