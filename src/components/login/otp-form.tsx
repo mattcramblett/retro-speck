@@ -20,7 +20,7 @@ import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-import { loginWithOtp, verifyOtp } from "@/lib/server-actions/authN-actions";
+import { verifyOtp } from "@/lib/server-actions/authN-actions";
 import { useState } from "react";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import {
