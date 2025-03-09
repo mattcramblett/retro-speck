@@ -52,7 +52,7 @@ export function OTPForm() {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (isCodeSent) {
       const forwardPath = await verifyOtp(values.email, values.code || "");
-      router.push(forwardPath);
+      setTimeout(() => router.push(forwardPath), 200);
     } else {
       await loginWithOtp(values.email);
       setIsCodeSent(true);

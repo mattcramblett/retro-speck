@@ -5,12 +5,13 @@ import { useUser } from "@/hooks/auth/use-user";
 import { CreateRetroForm } from "@/components/home/create-retro-form";
 import { ChevronRight } from "lucide-react";
 import Link from "next/link";
+import { Skeleton } from "../ui/skeleton";
 
 export function LandingContent() {
   const { data: user, isPending: isUserPending } = useUser();
 
   if (isUserPending) {
-    return <div className="h-28" />;
+    return <Skeleton className="h-12 max-w-24" />;
   }
 
   return (
