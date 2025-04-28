@@ -5,6 +5,7 @@ import {
   createRetro as insertRetro,
   updateRetro,
   userHasRecentRetro,
+  getRetroHistory as queryRetroHistory,
 } from "../repositories/retro-repository";
 import { assertAccess } from "./authZ-action";
 import { getUserOrThrow } from "./authN-actions";
@@ -65,3 +66,7 @@ export async function updateTopic(retroId: number, topicId: number): Promise<num
   return topicId;
 }
 
+export async function getRetroHistory(page: number, resultsPerPage: number) {
+  const user = await getUserOrThrow();
+  return await queryRetroHistory(user.id, page, resultsPerPage);
+}

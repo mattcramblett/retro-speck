@@ -3,9 +3,10 @@
 import { useUser } from "@/hooks/auth/use-user";
 
 import { CreateRetroForm } from "@/components/home/create-retro-form";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, LayoutDashboard } from "lucide-react";
 import Link from "next/link";
 import { Skeleton } from "../ui/skeleton";
+import { Button } from "../ui/button";
 
 export function LandingContent() {
   const { data: user, isPending: isUserPending } = useUser();
@@ -17,6 +18,13 @@ export function LandingContent() {
   return (
     <>
       {user && <CreateRetroForm />}
+      {user && (
+        <Link href="/my-retros">
+          <Button className="!text-primary" variant="link">
+            <LayoutDashboard />Past retros
+          </Button>
+        </Link>
+      )}
       {!user && (
         <div className="w-full flex items-end justify-start gap-4 p-4">
           <Link href="/login">

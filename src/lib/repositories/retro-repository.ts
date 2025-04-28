@@ -5,7 +5,7 @@ import {
   retrosInRetroSpeck as retroTable,
 } from "@/db/schema";
 import { uuidv4 } from "../utils";
-import { eq, gte, sql, and, count } from "drizzle-orm";
+import { eq, gte, sql, and, desc, countDistinct, count } from "drizzle-orm";
 import { phases, Retro } from "@/types/model";
 
 export async function getRetro(retroId: number): Promise<Retro> {
@@ -116,4 +116,40 @@ export async function createRetro({
   });
 
   return publicId;
+}
+
+export async function getRetroHistory(
+  userId: string,
+  page: number,
+  resultsPerPage: number,
+) {
+  const countResults = await db
+    .select({ value: countDistinct(retroTable.id) })
+    .from(retroTable)
+    .innerJoin(participantTable, eq(participantTable.retroId, retroTable.id))
+    .where(
+      and(
+        eq(participantTable.userId, userId),
+        eq(participantTable.isAccepted, true),
+      ),
+    )
+    //.groupBy(retroTable.id)
+    //.orderBy(desc(retroTable.id));
+  const totalItemsCount = countResults[0]?.value || 0;
+
+  const results = await db
+  .select()
+  .from(retroTable)
+  .innerJoin(participantTable, eq(participantTable.retroId, retroTable.id))
+  .where(
+    and(
+      eq(participantTable.userId, userId),
+      eq(participantTable.isAccepted, true),
+    ),
+  )
+  .orderBy(desc(retroTable.id))
+  .limit(resultsPerPage)
+  .offset(page * resultsPerPage);
+
+  return { totalItemsCount, items: results.map((it) => it.retros) };
 }
