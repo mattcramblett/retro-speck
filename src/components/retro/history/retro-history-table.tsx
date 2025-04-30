@@ -89,13 +89,15 @@ export default function RetroHistoryTable({
           ))}
         </TableBody>
       </Table>
-      <TablePagination
-        onChangePage={(page: number) => setPageIndex(page)}
-        currentIndex={pageIndex}
-        totalPages={
-          data ? Math.ceil(data.totalItemsCount / resultsPerPage) : 1
-        }
-      />
+      <div className="mt-2">
+        <TablePagination
+          onChangePage={(page: number) => setPageIndex(page)}
+          currentIndex={pageIndex}
+          totalPages={
+            data ? Math.ceil(data.totalItemsCount / resultsPerPage) : 1
+          }
+        />
+      </div>
     </>
   );
 }

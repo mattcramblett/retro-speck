@@ -33,8 +33,9 @@ export function ConnectionStatus({
   useEffect(() => {
     return () => {
       // Cleanup and unsubscribe from the realtime channel
-      if (isSuccess) {
-        channel?.unsubscribe();
+      if (isSuccess && channel) {
+        console.log("disconnecting from retro...")
+        channel.unsubscribe();
       }
     };
   }, [channel, isSuccess]);
