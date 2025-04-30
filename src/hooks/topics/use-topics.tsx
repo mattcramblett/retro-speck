@@ -82,8 +82,8 @@ export const useVotedTopics = (
   retroId: number,
   options?: Partial<ReturnType<typeof topicsQuery>>,
 ) => {
-  const { data: topics } = useTopics(retroId, options || {});
-  const { data: votes } = useVotes(retroId);
+  const { data: topics, isPending: isPendingTopics } = useTopics(retroId, options || {});
+  const { data: votes, isPending: isPendingVotes } = useVotes(retroId);
 
   const data = useMemo(() => {
     if (!topics || !votes) {
@@ -106,5 +106,5 @@ export const useVotedTopics = (
   const getTopicIndex = (topicId: number) =>
     data.map((topic) => topic.id).indexOf(topicId);
 
-  return { data, getTopicIndex };
+  return { data, getTopicIndex, isPending: isPendingVotes || isPendingTopics };
 };

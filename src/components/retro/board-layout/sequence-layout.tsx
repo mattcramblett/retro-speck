@@ -3,7 +3,7 @@ import {
   useRetro,
   useUpdateTopic,
 } from "@/hooks/retros/use-retro";
-import { useTopic, useVotedTopics } from "@/hooks/topics/use-topics";
+import { useTopic, useVotedTopics, useTopics } from "@/hooks/topics/use-topics";
 import { Card, Column, Participant, Retro } from "@/types/model";
 import { RetroTopic } from "../topic/retro-topic";
 import { RetroColumn } from "../retro-column";
@@ -32,14 +32,21 @@ export function SequenceLayout({
     useUpdateTopic(retroId);
 
   // Pass these initial data for initial page loads
-  useColumns(retroId, { initialData: initialColumns });
-  useRetroCards({ retroId, initialData: initialCards });
   useParticipants(retroId, { initialData: initialParticipants });
+  const { isPending: isPendingColumns } = useColumns(retroId, {
+    initialData: initialColumns,
+  });
+  const { useCards } = useRetroCards({ retroId, initialData: initialCards });
+  const { isPending: isPendingCards } = useCards();
 
-  const { data: sortedTopics, getTopicIndex } = useVotedTopics(retroId);
+  const {
+    data: sortedTopics,
+    getTopicIndex,
+    isPending: isPendingVotedTopic,
+  } = useVotedTopics(retroId);
   const { mutate: advancePhase } = useAdvancePhase(retroId);
 
-  const { data: topic, isPending } = useTopic(
+  const { data: topic, isPending: isPendingTopic } = useTopic(
     retroId,
     retro?.currentTopicId || 0,
     {
@@ -72,6 +79,9 @@ export function SequenceLayout({
     retro?.currentTopicId &&
     getTopicIndex(retro?.currentTopicId || 0) > 0;
 
+  const isAnythingPending =
+    isPendingTopic || isPendingCards || isPendingColumns || isPendingVotedTopic;
+
   return (
     <div className="flex size-full items-center justify-center px-8">
       <div className="flex gap-4 h-full items-center">
@@ -82,8 +92,10 @@ export function SequenceLayout({
             </Button>
           </div>
         )}
-        {isPending && <Skeleton className="rounded-xl w-full h-48" />}
-        {!isPending && (
+        {isAnythingPending && (
+          <Skeleton className="rounded-xl w-full min-w-56 h-48" />
+        )}
+        {!isAnythingPending && (
           <RetroColumn className="py-4">
             <RetroTopic retroId={retroId} topicId={topic?.id || 0} />
             <div className="text-muted-foreground">
