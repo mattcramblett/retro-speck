@@ -3,7 +3,7 @@ import {
   useRetro,
   useUpdateTopic,
 } from "@/hooks/retros/use-retro";
-import { useTopic, useVotedTopics, useTopics } from "@/hooks/topics/use-topics";
+import { useTopic, useVotedTopics } from "@/hooks/topics/use-topics";
 import { Card, Column, Participant, Retro } from "@/types/model";
 import { RetroTopic } from "../topic/retro-topic";
 import { RetroColumn } from "../retro-column";
