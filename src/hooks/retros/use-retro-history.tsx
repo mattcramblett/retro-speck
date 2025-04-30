@@ -22,9 +22,7 @@ export function useRetroHistory({
 }: RetroHistoryParams & {
   options?: Partial<ReturnType<typeof retroHistoryQuery>>;
 }) {
-  return useQuery({
-    queryKey: ["retroHistory", pageIndex, resultsPerPage],
-    queryFn: () => getRetroHistory(pageIndex, resultsPerPage || 5),
-    ...(options || {}),
-  });
+  return useQuery(
+    retroHistoryQuery({ pageIndex, resultsPerPage, ...(options || {}) }),
+  );
 }

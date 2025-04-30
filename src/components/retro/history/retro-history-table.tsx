@@ -14,6 +14,7 @@ import { TablePagination } from "@/components/ui/table-pagination";
 import { useRetroHistory } from "@/hooks/retros/use-retro-history";
 import Link from "next/link";
 import { useState } from "react";
+import { getRetroHistory } from "@/lib/server-actions/retro-actions";
 
 const formatTimestamp = (timestamp: string) => {
   return new Date(timestamp).toLocaleString("en-US", {
@@ -26,19 +27,24 @@ const formatTimestamp = (timestamp: string) => {
   });
 };
 
-const RESULTS_PER_PAGE = 5;
-
-export default function RetroHistoryTable() {
+export default function RetroHistoryTable({
+  initialData,
+  resultsPerPage,
+}: {
+  initialData?: Awaited<ReturnType<typeof getRetroHistory>>;
+  resultsPerPage: number;
+}) {
   const [pageIndex, setPageIndex] = useState(0);
   const { data, isPending } = useRetroHistory({
     pageIndex,
-    resultsPerPage: RESULTS_PER_PAGE,
+    resultsPerPage,
+    options: { initialData }
   });
 
   if (isPending) {
     return (
       <div className="flex flex-col gap-2 items-center">
-        {Array.from(new Array(RESULTS_PER_PAGE))
+        {Array.from(new Array(resultsPerPage))
           .keys()
           .toArray()
           .map((i) => (
@@ -68,7 +74,7 @@ export default function RetroHistoryTable() {
             <TableRow key={row.id}>
               <TableCell className="font-medium">
                 <Button variant="link">
-                  <Link href={`/retro/${row.publicId}`}>{row.name}</Link>
+                  <Link prefetch={false} href={`/retro/${row.publicId}`}>{row.name}</Link>
                 </Button>
               </TableCell>
               <TableCell>
@@ -87,7 +93,7 @@ export default function RetroHistoryTable() {
         onChangePage={(page: number) => setPageIndex(page)}
         currentIndex={pageIndex}
         totalPages={
-          data ? Math.floor(data.totalItemsCount / RESULTS_PER_PAGE) + 1 : 1
+          data ? Math.ceil(data.totalItemsCount / resultsPerPage) : 1
         }
       />
     </>
