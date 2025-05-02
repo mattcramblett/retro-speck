@@ -38,7 +38,7 @@ export default function RetroHistoryTable({
   const { data, isPending } = useRetroHistory({
     pageIndex,
     resultsPerPage,
-    options: { initialData }
+    options: { initialData },
   });
 
   if (isPending) {
@@ -74,7 +74,9 @@ export default function RetroHistoryTable({
             <TableRow key={row.id}>
               <TableCell className="font-medium">
                 <Button variant="link">
-                  <Link prefetch={false} href={`/retro/${row.publicId}`}>{row.name}</Link>
+                  <Link prefetch={false} href={`/retro/${row.publicId}`}>
+                    {row.name}
+                  </Link>
                 </Button>
               </TableCell>
               <TableCell>
@@ -89,7 +91,7 @@ export default function RetroHistoryTable({
           ))}
         </TableBody>
       </Table>
-      <div className="mt-2">
+      <div className="mt-2 max-w">
         <TablePagination
           onChangePage={(page: number) => setPageIndex(page)}
           currentIndex={pageIndex}
@@ -97,6 +99,9 @@ export default function RetroHistoryTable({
             data ? Math.ceil(data.totalItemsCount / resultsPerPage) : 1
           }
         />
+        <div className="mt-2 max-w flex flex-col items-end text-muted-foreground text-sm">
+          {`Showing results ${resultsPerPage * pageIndex + 1} - ${resultsPerPage * pageIndex + (data?.items?.length || 0)}`}
+        </div>
       </div>
     </>
   );
