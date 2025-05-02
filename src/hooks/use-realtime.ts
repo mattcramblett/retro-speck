@@ -42,7 +42,6 @@ export function useRealtime({
 
   return useQuery({
     queryKey: ["realtime", retroPublicId],
-    staleTime: Infinity,
     queryFn: () => {
       const channel = client.current.channel(retroPublicId, {
         config: {

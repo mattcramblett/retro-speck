@@ -1,4 +1,3 @@
-"use server";
 import { getRetroByPublicId } from "@/lib/repositories/retro-repository";
 import {
   ensureParticipant,
@@ -11,6 +10,9 @@ import { RetroBoard } from "@/components/retro/retro-board";
 import { WaitingRoom } from "@/components/waiting-room/waiting-room";
 import { withRetry } from "@/lib/utils";
 import { User } from "@supabase/auth-helpers-nextjs";
+
+export const revalidate = 0;
+export const dynamic = 'force-dynamic';
 
 export default async function RetroBoardPage({
   params,
